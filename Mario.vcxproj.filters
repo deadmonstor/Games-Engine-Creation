@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\character">
+      <UniqueIdentifier>{b4eb9806-0b90-401b-aaf7-6ad71dbe88fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\texture">
+      <UniqueIdentifier>{f501fcd4-eae5-40be-ab43-ac578f79e138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\screenmanager">
+      <UniqueIdentifier>{b7608e16-37f1-48e0-9fdb-b3572b6de2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\enemy">
+      <UniqueIdentifier>{7e930534-34bb-48ff-8231-c4a16e3112ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files\character</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="screenmanager.cpp">
+      <Filter>Source Files\screenmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>Source Files\enemy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="SDL\SDL2.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+    <Library Include="SDL\SDL2_image.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+    <Library Include="SDL\SDL2_mixer.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+    <Library Include="SDL\SDL2main.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+    <Library Include="SDL\SDL2_ttf.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>Source Files\character</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Source Files\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="screenmanager.h">
+      <Filter>Source Files\screenmanager</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Source Files\enemy</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
