@@ -21,6 +21,9 @@
     <Filter Include="Source Files\enemy">
       <UniqueIdentifier>{7e930534-34bb-48ff-8231-c4a16e3112ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\collisions">
+      <UniqueIdentifier>{97697c98-0b35-42fd-b114-b2d8283fc11b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -37,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="enemy.cpp">
       <Filter>Source Files\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="collisions.cpp">
+      <Filter>Source Files\collisions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="enemy.h">
       <Filter>Source Files\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="collisions.h">
+      <Filter>Source Files\collisions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

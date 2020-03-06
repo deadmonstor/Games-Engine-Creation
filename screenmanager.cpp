@@ -17,7 +17,7 @@ void screenManager::setupLevel(SCREENS screen)
 	a->user.data1 = &screen;
 	a->type = PREMAPCHANGE;
 
-	game->PushEvent(PREMAPCHANGE);
+	game->PushEvent(PREMAPCHANGE, *a);
 
 	// Delete all actors in level
 	delete LocalPlayer;
@@ -31,7 +31,7 @@ void screenManager::setupLevel(SCREENS screen)
 
 	a->type = POSTMAPCHANGE;
 
-	game->PushEvent(POSTMAPCHANGE);
+	game->PushEvent(POSTMAPCHANGE, *a);
 
 	delete a;
 }

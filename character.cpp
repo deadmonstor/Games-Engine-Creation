@@ -9,7 +9,7 @@ bool canMove;
 void keyDownCharacter(SDL_Event curEvent)
 {
 
-	if (!canMove){ return; }
+	//if (!canMove){ return; }
 
 	switch (curEvent.key.keysym.sym) {
 		
@@ -50,17 +50,6 @@ void renderCharacter(SDL_Event aaaaaaa)
 
 
 	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, SDL_FLIP_HORIZONTAL);
-}
-
-bool character::isColliding(SDL_Rect enemy)
-{
-	Vector2D vec = Vector2D((DestR.x - enemy.y), (DestR.y - enemy.y));
-
-	double dist = sqrt((DestR.x * DestR.x) + (DestR.y * DestR.y));
-
-	cout << dist;
-
-	return false;
 }
 
 character::character(gameBase* gameBases, texture2D* texture)
