@@ -19,11 +19,15 @@
 			void keyDown(SDL_Event event);
 
 		private:
+
 			gameBase* game;
 			SDL_Texture* curTexture;
 			SDL_Rect imgPartRect;
 			SDL_Rect DestR;
 			bool canMove;
+
+			FACING curFacing;
+
 	};
 
 #endif

@@ -14,6 +14,7 @@ void character::keyDown(SDL_Event curEvent)
 
 		case SDLK_a: {
 			DestR.x--;
+			curFacing = FACING::LEFT;
 			break;
 		}
 
@@ -24,6 +25,7 @@ void character::keyDown(SDL_Event curEvent)
 
 		case SDLK_d: {
 			DestR.x++;
+			curFacing = FACING::RIGHT;
 			break;
 		}
 
@@ -48,7 +50,7 @@ void character::renderCharacter(SDL_Event event)
 	DestR.h = 75;
 
 
-	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, SDL_FLIP_HORIZONTAL);
+	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == 1 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
 static void renderCharacters(SDL_Event event, void* this_pointer)
