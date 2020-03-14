@@ -21,10 +21,16 @@ void screenManager::setupLevel(SCREENS screen)
 
 	// Delete all actors in level
 	delete LocalPlayer;
+	for (enemy* curEnemy : enemyTable) {
+
+		enemyTable.erase(std::remove(enemyTable.begin(), enemyTable.end(), curEnemy), enemyTable.end());
+		delete curEnemy;
+
+	}
 
 	//Setup new actors
 	LocalPlayer = new character(game, texture);
-	enemys = new enemy(game, texture);
+	enemyTable.push_back(new enemy(game, texture));
 
 	// Set position of actors
 	// TODO
@@ -54,8 +60,16 @@ void screenManager::update()
 
 void screenManager::updateScreenOne()
 {
-	if (collisions::Instance()->Box(LocalPlayer, enemys)) 
-	{
-		cout << "test" << endl;
+	LocalPlayer->canMove = true;
+	
+	for (enemy* enemys : enemyTable) {
+		
+		if (collisions::Instance()->Box(LocalPlayer, enemys))
+		{
+			LocalPlayer->canMove = false;
+			break;
+		}
+
 	}
+
 }

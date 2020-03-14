@@ -3,7 +3,7 @@
 void character::keyDown(SDL_Event curEvent)
 {
 
-	//if (!canMove){ return; }
+	if (!canMove){ return; }
 
 	switch (curEvent.key.keysym.sym) {
 		
