@@ -6,6 +6,8 @@
 	#include "main.h"
 	#include "texture.h"
 
+	#define JUMP_FORCE_DECREMENT 400
+
 	class character {
 
 		public:
@@ -17,6 +19,9 @@
 
 			void renderCharacter(SDL_Event event);
 			void keyDown(SDL_Event event);
+			void Update(SDL_Event event);
+			void Jump();
+			void addGravity(SDL_Event event, float deltaTime);
 
 			bool canMove;
 
@@ -26,6 +31,10 @@
 			SDL_Texture* curTexture;
 			SDL_Rect imgPartRect;
 			SDL_Rect DestR;
+
+			int jumpForce;
+			bool jumping;
+			bool canJump;
 
 			FACING curFacing;
 

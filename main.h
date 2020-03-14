@@ -51,7 +51,7 @@
 			bool SDLInit();
 			void SDLClose();
 
-			bool Update(SDL_Event event);
+			bool Update(SDL_Event event, float deltaTime);
 			void Render();
 
 			void PushEvent(int id);
@@ -61,6 +61,11 @@
 			map<int, vector<void (*)(SDL_Event event, void * this_pointer)>> hookFunctionCharacter;
 
 			bool shouldQuit = false;
+
+			void renderText(string text, SDL_Rect dest);
+
+		private:
+			TTF_Font* Sans;
 
 	};
 

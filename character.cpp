@@ -1,5 +1,15 @@
 #include "character.h"
 
+void character::Jump()
+{
+	if (!jumping)
+	{
+		jumpForce = 400;
+		jumping = true;
+		canJump = false;
+	}
+}
+
 void character::keyDown(SDL_Event curEvent)
 {
 
@@ -7,26 +17,35 @@ void character::keyDown(SDL_Event curEvent)
 
 	switch (curEvent.key.keysym.sym) {
 		
-		case SDLK_w: {
+		case SDLK_w: 
+		{
 			DestR.y--;
 			break;
 		}
 
-		case SDLK_a: {
+		case SDLK_a: 
+		{
 			DestR.x--;
 			curFacing = FACING::LEFT;
 			break;
 		}
 
-		case SDLK_s: {
+		case SDLK_s: 
+		{
 			DestR.y++;
 			break;
 		}
 
-		case SDLK_d: {
+		case SDLK_d: 
+		{
 			DestR.x++;
 			curFacing = FACING::RIGHT;
 			break;
+		}
+
+		case SDLK_SPACE: 
+		{
+			Jump();
 		}
 
 	}
@@ -50,7 +69,7 @@ void character::renderCharacter(SDL_Event event)
 	DestR.h = 75;
 
 
-	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == 1 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::LEFT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
 static void renderCharacters(SDL_Event event, void* this_pointer)
@@ -59,12 +78,48 @@ static void renderCharacters(SDL_Event event, void* this_pointer)
 	self->renderCharacter(event);
 }
 
+void character::Update(SDL_Event event)
+{
+	if (jumping)
+	{
+		DestR.y -= jumpForce * (int)event.user.data1;
+
+		jumpForce -= JUMP_FORCE_DECREMENT * (int)event.user.data1;
+
+		if (jumpForce <= 0.0f)
+		{
+			jumping = false;
+		}
+	}
+
+	addGravity(event, (int)event.user.data1);
+}
+
+static void updateCharacter(SDL_Event event, void* this_pointer)
+{
+	character* self = static_cast<character*>(this_pointer);
+	self->Update(event);
+}
+
+void character::addGravity(SDL_Event event, float deltaTime)
+{
+	if (DestR.y < (SCREEN_HEIGHT - 60))
+	{
+		DestR.y += (300.0f * *(float*)event.user.data1);
+	}
+	else
+	{
+		DestR.y = SCREEN_HEIGHT - 60;
+	}
+}
+
 character::character(gameBase* gameBases, texture2D* texture)
 {
 	game = gameBases;
 
 	game->hookFunctionCharacter[SDL_KEYDOWN].push_back(&keyDowns);
 	game->hookFunctionCharacter[RENDERUPDATE].push_back(&renderCharacters);
+	game->hookFunctionCharacter[POSTTICK].push_back(&updateCharacter);
 
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
 }

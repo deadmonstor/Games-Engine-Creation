@@ -1,6 +1,7 @@
 #include "main.h"
 #include "texture.h"
 #include "screenmanager.h"
+#include <string>
 
 texture2D* texture;
 screenManager* gameScreenManager;
@@ -15,20 +16,34 @@ int main(int argc, char* args[])
 
 	texture = new texture2D(game);
 
+	float tickCount = 0;
+	float deltaTime = 0;
+
 	game->SDLInit();
 
 	gameScreenManager = new screenManager(game, texture);
 
 	while (!game->shouldQuit)
 	{
+		deltaTime = (SDL_GetTicks() - tickCount) / 1000.0f;
+
+		if (deltaTime > 0.05f)
+		{
+			deltaTime = 0.05f;
+		}
+
+		tickCount = SDL_GetTicks();
+
 		game->Render();
 
 		SDL_Event e;
 		SDL_PollEvent(&e);
 
-		game->shouldQuit = game->Update(e);
-	}
+		cout << deltaTime << endl;
 
+		game->shouldQuit = game->Update(e, deltaTime);
+
+	}
 
 	return 0;
 }
@@ -84,14 +99,20 @@ void gameBase::PushEvent(int id, SDL_Event event)
 	}
 }
 
-bool gameBase::Update(SDL_Event event)
+bool gameBase::Update(SDL_Event event, float deltaTime)
 {
 
-	gameBase::PushEvent(PRETICK);
+	SDL_Event* a = new SDL_Event;
+	a->user.data1 = &deltaTime;
+	a->type = PRETICK;
+
+	gameBase::PushEvent(PRETICK, *a);
 
 	gameBase::PushEvent(event.type, event);
 
-	gameBase::PushEvent(POSTTICK);
+	a->type = POSTTICK;
+
+	gameBase::PushEvent(POSTTICK, *a);
 
 	gameScreenManager->update();
 
@@ -105,7 +126,6 @@ bool gameBase::Update(SDL_Event event)
 	return false;
 }
 
-static TTF_Font * Sans = NULL;
 const int timeStart = time(NULL);
 
 void gameBase::Render()
@@ -157,7 +177,7 @@ bool gameBase::SDLInit()
 
 	}
 
-	gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+	gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	if (gRenderer != NULL)
 	{
