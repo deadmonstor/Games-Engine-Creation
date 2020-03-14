@@ -8,7 +8,6 @@ class character {
 		character(gameBase* gameBases, texture2D* textures);
 		~character();
 
-
-	private:
-		bool isColliding(SDL_Rect enemy);
+		SDL_Rect getPosition();
+		SDL_Rect getRenderBox();
 };

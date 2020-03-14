@@ -5,7 +5,7 @@ screenManager::screenManager(gameBase* gameBases, texture2D* textures) {
 	texture = textures;
 
 	LocalPlayer = new character(game, texture);
-	setupLevel(SCREENS::SCRENE_INTRO);
+	setupLevel(SCREENS::SCREEN_LEVEL1); // Change to intro on start
 }
 
 screenManager::~screenManager() { }
@@ -34,4 +34,28 @@ void screenManager::setupLevel(SCREENS screen)
 	game->PushEvent(POSTMAPCHANGE, *a);
 
 	delete a;
+
+	curScreen = screen;
+}
+
+void screenManager::update()
+{
+	switch (curScreen) {
+
+		case SCREENS::SCREEN_LEVEL1:
+		{
+			updateScreenOne();
+			break;
+		}
+
+	}
+
+}
+
+void screenManager::updateScreenOne()
+{
+	if (collisions::Instance()->Box(LocalPlayer, enemys)) 
+	{
+		cout << "test" << endl;
+	}
 }

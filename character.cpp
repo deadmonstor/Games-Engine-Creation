@@ -62,6 +62,22 @@ character::character(gameBase* gameBases, texture2D* texture)
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
 }
 
+SDL_Rect character::getPosition()
+{
+	return DestR;
+}
+
+SDL_Rect character::getRenderBox()
+{
+	SDL_Rect returnValue;
+	returnValue.x = DestR.x;
+	returnValue.y = DestR.y;
+	returnValue.w = DestR.w * 1.5;
+	returnValue.h = DestR.h;
+
+	return returnValue;
+}
+
 
 character::~character()
 {

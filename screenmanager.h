@@ -3,6 +3,7 @@
 #include "character.h"
 #include "texture.h"
 #include "enemy.h"
+#include "collisions.h"
 
 #ifndef _SCREENMANAGER_H
 	#define _SCREENMANAGER_H
@@ -14,6 +15,7 @@
 			~screenManager();
 
 			void setupLevel(SCREENS screen);
+			void update();
 
 		private:
 
@@ -23,6 +25,9 @@
 			texture2D* texture = NULL;
 
 			SCREENS curScreen = SCRENE_INTRO;
+
+			
+			void updateScreenOne();
 	};
 
 #endif

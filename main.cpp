@@ -71,6 +71,8 @@ bool gameBase::Update(SDL_Event event)
 
 	gameBase::PushEvent(POSTTICK);
 
+	gameScreenManager->update();
+
 	switch (event.type)
 	{
 		case SDL_QUIT:

@@ -31,6 +31,22 @@ enemy::enemy(gameBase* gameBases, texture2D* texture)
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
 }
 
+SDL_Rect enemy::getPosition()
+{
+	return DestRs;
+}
+
+SDL_Rect enemy::getRenderBox()
+{
+	SDL_Rect returnValue;
+
+	returnValue.x = DestRs.x;
+	returnValue.y = DestRs.y;
+	returnValue.w = DestRs.w * 1.5;
+	returnValue.h = DestRs.h;
+
+	return returnValue;
+}
 
 enemy::~enemy()
 {
