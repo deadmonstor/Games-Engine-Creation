@@ -48,6 +48,20 @@ void gameBase::PushEvent(int id)
 
 		delete a;
 	}
+
+	maxSize = hookFunctionCharacter[id].size();
+
+	for (int i = 0; i < maxSize; i++)
+	{
+		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
+
+		SDL_Event* a = new SDL_Event;
+		a->type = id;
+
+		vectorArray.at(i)(*a, gameScreenManager->LocalPlayer);
+
+		delete a;
+	}
 }
 
 void gameBase::PushEvent(int id, SDL_Event event)
@@ -59,6 +73,14 @@ void gameBase::PushEvent(int id, SDL_Event event)
 		vector<void (*)(SDL_Event event)> vectorArray = hookFunction[id];
 
 		vectorArray.at(i)(event);
+	}
+
+	maxSize = hookFunctionCharacter[id].size();
+
+	for (int i = 0; i < maxSize; i++)
+	{
+		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
+		vectorArray.at(i)(event, gameScreenManager->LocalPlayer);
 	}
 }
 

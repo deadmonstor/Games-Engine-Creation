@@ -52,6 +52,7 @@
 			void PushEvent(int id, SDL_Event event);
 
 			map<int, vector<void (*)(SDL_Event event)>> hookFunction;
+			map<int, vector<void (*)(SDL_Event event, void * this_pointer)>> hookFunctionCharacter;
 
 			bool shouldQuit = false;
 

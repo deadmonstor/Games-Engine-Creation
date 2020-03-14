@@ -17,10 +17,11 @@
 			void setupLevel(SCREENS screen);
 			void update();
 
+			character* LocalPlayer = NULL;
+
 		private:
 
 			gameBase* game = NULL;
-			character* LocalPlayer = NULL;
 			enemy* enemys = NULL;
 			texture2D* texture = NULL;
 

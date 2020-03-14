@@ -1,12 +1,6 @@
 #include "character.h"
 
-static gameBase* game;
-static SDL_Texture* curTexture;
-SDL_Rect imgPartRect;
-SDL_Rect DestR;
-bool canMove; 
-
-void keyDownCharacter(SDL_Event curEvent)
+void character::keyDown(SDL_Event curEvent)
 {
 
 	//if (!canMove){ return; }
@@ -37,8 +31,13 @@ void keyDownCharacter(SDL_Event curEvent)
 
 }
 
+static void keyDowns(SDL_Event event, void* this_pointer)
+{
+	character* self = static_cast<character*>(this_pointer);
+	self->keyDown(event);
+}
 
-void renderCharacter(SDL_Event aaaaaaa)
+void character::renderCharacter(SDL_Event event)
 {
 	imgPartRect.x = 126;
 	imgPartRect.y = 0;
@@ -52,12 +51,18 @@ void renderCharacter(SDL_Event aaaaaaa)
 	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, SDL_FLIP_HORIZONTAL);
 }
 
+static void renderCharacters(SDL_Event event, void* this_pointer)
+{
+	character* self = static_cast<character*>(this_pointer);
+	self->renderCharacter(event);
+}
+
 character::character(gameBase* gameBases, texture2D* texture)
 {
 	game = gameBases;
 
-	game->hookFunction[SDL_KEYDOWN].push_back(&keyDownCharacter);
-	game->hookFunction[RENDERUPDATE].push_back(&renderCharacter);
+	game->hookFunctionCharacter[SDL_KEYDOWN].push_back(&keyDowns);
+	game->hookFunctionCharacter[RENDERUPDATE].push_back(&renderCharacters);
 
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
 }
