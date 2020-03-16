@@ -2,9 +2,9 @@
 
 void character::Jump()
 {
-	if (!jumping)
+	if (!jumping && canJump)
 	{
-		jumpForce = 400;
+		jumpForce = JUMP_FORCE;
 		jumping = true;
 		canJump = false;
 	}
@@ -13,42 +13,9 @@ void character::Jump()
 void character::keyDown(SDL_Event curEvent)
 {
 
+	curDown[curEvent.key.keysym.sym] = true;
+
 	if (!canMove){ return; }
-
-	switch (curEvent.key.keysym.sym) {
-		
-		case SDLK_w: 
-		{
-			DestR.y--;
-			break;
-		}
-
-		case SDLK_a: 
-		{
-			DestR.x--;
-			curFacing = FACING::LEFT;
-			break;
-		}
-
-		case SDLK_s: 
-		{
-			DestR.y++;
-			break;
-		}
-
-		case SDLK_d: 
-		{
-			DestR.x++;
-			curFacing = FACING::RIGHT;
-			break;
-		}
-
-		case SDLK_SPACE: 
-		{
-			Jump();
-		}
-
-	}
 
 }
 
@@ -56,6 +23,17 @@ static void keyDowns(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
 	self->keyDown(event);
+}
+
+void character::keyUp(SDL_Event curEvent)
+{
+	curDown[curEvent.key.keysym.sym] = false;
+}
+
+static void keyUps(SDL_Event event, void* this_pointer)
+{
+	character* self = static_cast<character*>(this_pointer);
+	self->keyUp(event);
 }
 
 void character::renderCharacter(SDL_Event event)
@@ -69,7 +47,7 @@ void character::renderCharacter(SDL_Event event)
 	DestR.h = 75;
 
 
-	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::LEFT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
 static void renderCharacters(SDL_Event event, void* this_pointer)
@@ -82,17 +60,33 @@ void character::Update(SDL_Event event)
 {
 	if (jumping)
 	{
-		DestR.y -= jumpForce * (int)event.user.data1;
+		DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
 
-		jumpForce -= JUMP_FORCE_DECREMENT * (int)event.user.data1;
+		jumpForce -= JUMP_FORCE_DECREMENT * *(float*)event.user.data1;
 
 		if (jumpForce <= 0.0f)
-		{
 			jumping = false;
-		}
+
+	}
+	else {
+		addGravity(event, (int)event.user.data1);
 	}
 
-	addGravity(event, (int)event.user.data1);
+	
+	if (curDown[SDLK_a])
+	{
+		DestR.x--;
+		curFacing = FACING::LEFT;
+	}
+	else if (curDown[SDLK_d])
+	{
+		DestR.x++;
+		curFacing = FACING::RIGHT;
+	}
+
+	if (curDown[SDLK_SPACE])
+		Jump();
+
 }
 
 static void updateCharacter(SDL_Event event, void* this_pointer)
@@ -105,11 +99,13 @@ void character::addGravity(SDL_Event event, float deltaTime)
 {
 	if (DestR.y < (SCREEN_HEIGHT - 60))
 	{
-		DestR.y += (300.0f * *(float*)event.user.data1);
+		DestR.y += (200.0f * *(float*)event.user.data1);
+		canJump = false;
 	}
 	else
 	{
 		DestR.y = SCREEN_HEIGHT - 60;
+		canJump = true;
 	}
 }
 
@@ -118,6 +114,8 @@ character::character(gameBase* gameBases, texture2D* texture)
 	game = gameBases;
 
 	game->hookFunctionCharacter[SDL_KEYDOWN].push_back(&keyDowns);
+	game->hookFunctionCharacter[SDL_KEYUP].push_back(&keyUps);
+
 	game->hookFunctionCharacter[RENDERUPDATE].push_back(&renderCharacters);
 	game->hookFunctionCharacter[POSTTICK].push_back(&updateCharacter);
 
