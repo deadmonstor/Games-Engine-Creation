@@ -213,6 +213,13 @@ bool gameBase::SDLInit()
 	if (Sans == NULL)
 		Sans = TTF_OpenFont("OpenSans-Regular.ttf", 24);
 
+	int result = Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 2048);
+	if (result < 0)
+	{
+		printf("Unable to open audio: %s\n", SDL_GetError());
+		return false;
+	}
+
 	return true;
 }
 
@@ -225,6 +232,7 @@ void gameBase::SDLClose()
 	SDL_DestroyRenderer(gRenderer);
 	gRenderer = NULL;
 
+	Mix_CloseAudio();
 	IMG_Quit();
 	TTF_Quit();
 	SDL_Quit();

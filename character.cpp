@@ -7,6 +7,8 @@ void character::Jump()
 		jumpForce = JUMP_FORCE;
 		jumping = true;
 		canJump = false;
+ 		soundManager::Instance()->setVolume(1, 5);
+		soundManager::Instance()->playSound(1);
 	}
 }
 

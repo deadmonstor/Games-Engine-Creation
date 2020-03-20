@@ -42,6 +42,9 @@ void screenManager::setupLevel(SCREENS screen)
 	delete a;
 
 	curScreen = screen;
+
+	soundManager::Instance()->setVolume(0, 20);
+	soundManager::Instance()->playSound(0, -1);
 }
 
 void screenManager::update()

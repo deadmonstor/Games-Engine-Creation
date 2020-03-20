@@ -62,8 +62,6 @@
 
 			bool shouldQuit = false;
 
-			void renderText(string text, SDL_Rect dest);
-
 		private:
 			TTF_Font* Sans;
 

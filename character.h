@@ -5,6 +5,7 @@
 	#define _CHARACTER_H
 	#include "main.h"
 	#include "texture.h"
+	#include "soundManager.h"
 
 	#define JUMP_FORCE 200
 	#define JUMP_FORCE_DECREMENT 400
