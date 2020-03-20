@@ -2,10 +2,24 @@
 
 static gameBase* game;
 
+texture2D* texture2D::mInstance = NULL;
 
 texture2D::texture2D(gameBase* gameBases)
 {
 	game = gameBases;
+}
+
+texture2D* texture2D::Instance(gameBase* gameBases)
+{
+	if (!mInstance)
+		mInstance = new texture2D(gameBases);
+
+	return mInstance;
+}
+
+texture2D* texture2D::Instance()
+{
+	return mInstance;
 }
 
 texture2D::~texture2D()
