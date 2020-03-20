@@ -27,6 +27,9 @@
     <Filter Include="Source Files\soundmanager">
       <UniqueIdentifier>{9cb3a6f2-51ef-4531-be2f-a16bca88b8eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\tiles">
+      <UniqueIdentifier>{81fdc802-8e36-4467-8c8e-e4a95d01d8f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="soundManager.cpp">
       <Filter>Source Files\soundmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="tiles.cpp">
+      <Filter>Source Files\tiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +95,9 @@
     </ClInclude>
     <ClInclude Include="soundManager.h">
       <Filter>Source Files\soundmanager</Filter>
+    </ClInclude>
+    <ClInclude Include="tiles.h">
+      <Filter>Source Files\tiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

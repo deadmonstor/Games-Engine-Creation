@@ -26,6 +26,7 @@
     <ClCompile Include="screenmanager.cpp" />
     <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="tiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SDL\SDL2.lib" />
@@ -42,6 +43,7 @@
     <ClInclude Include="screenmanager.h" />
     <ClInclude Include="soundManager.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="tiles.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
