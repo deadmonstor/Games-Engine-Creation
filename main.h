@@ -5,8 +5,8 @@
 
 	using namespace std;
 	
-	#define SCREEN_WIDTH 320 * 4
-	#define SCREEN_HEIGHT 240 * 2.5
+	#define SCREEN_WIDTH 1280
+	#define SCREEN_HEIGHT 640
 
 	#define RENDERUPDATE 1
 	#define PRETICK 2
@@ -44,9 +44,13 @@
 
 		public:
 
+			gameBase();
+
 			SDL_Window* gWindow = NULL;
 			SDL_Renderer* gRenderer = NULL;
-			SDL_Texture* gTexture = NULL; 
+			SDL_Texture* gTexture = NULL;
+
+			static gameBase* Instance();
 
 			bool SDLInit();
 			void SDLClose();
@@ -64,6 +68,7 @@
 
 		private:
 			TTF_Font* Sans;
+			static gameBase* mInstance;
 
 	};
 

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "texture.h"
 #include "screenmanager.h"
+#include "tiles.h"
 #include <string>
 
 texture2D* texture;
@@ -8,13 +9,13 @@ screenManager* gameScreenManager;
 
 int main(int argc, char* args[])
 {
-	gameBase* game = new gameBase();
+	gameBase* game = gameBase::Instance();
 
 	/*
 		INIT MODULES
 	*/
 
-	texture = new texture2D(game);
+	texture = texture2D::Instance(game);
 
 	float tickCount = 0;
 	float deltaTime = 0;
@@ -139,6 +140,7 @@ void gameBase::Render()
 
 	//SDL_RenderCopyEx(gRenderer, gTexture, NULL, &renderLocation, 0, NULL, SDL_FLIP_NONE);
 
+	tiles::Instance()->render();
 	gameBase::PushEvent(RENDERUPDATE);
 
 	SDL_RenderPresent(gRenderer);
@@ -237,4 +239,19 @@ void gameBase::SDLClose()
 	TTF_Quit();
 	SDL_Quit();
 
+}
+
+gameBase* gameBase::mInstance = NULL;
+
+gameBase::gameBase()
+{
+
+}
+
+gameBase* gameBase::Instance()
+{
+	if (!mInstance)
+		mInstance = new gameBase;
+
+	return mInstance;
 }
