@@ -2,6 +2,7 @@
 #include "texture.h"
 #include "screenmanager.h"
 #include "tiles.h"
+#include "highscores.h"
 #include <string>
 
 texture2D* texture;
@@ -141,6 +142,7 @@ void gameBase::Render()
 	//SDL_RenderCopyEx(gRenderer, gTexture, NULL, &renderLocation, 0, NULL, SDL_FLIP_NONE);
 
 	tiles::Instance()->render();
+	highscores::Instance()->render();
 	gameBase::PushEvent(RENDERUPDATE);
 
 	SDL_RenderPresent(gRenderer);

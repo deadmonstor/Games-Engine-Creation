@@ -65,9 +65,9 @@
 			map<int, vector<void (*)(SDL_Event event, void * this_pointer)>> hookFunctionCharacter;
 
 			bool shouldQuit = false;
+			TTF_Font* Sans;
 
 		private:
-			TTF_Font* Sans;
 			static gameBase* mInstance;
 
 	};

@@ -30,6 +30,9 @@
     <Filter Include="Source Files\tiles">
       <UniqueIdentifier>{81fdc802-8e36-4467-8c8e-e4a95d01d8f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\highscores">
+      <UniqueIdentifier>{882478c6-0a7f-49d9-8585-b35056a82619}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="tiles.cpp">
       <Filter>Source Files\tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="highscores.cpp">
+      <Filter>Source Files\highscores</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="tiles.h">
       <Filter>Source Files\tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="highscores.h">
+      <Filter>Source Files\highscores</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
