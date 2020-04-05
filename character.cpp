@@ -60,6 +60,9 @@ static void renderCharacters(SDL_Event event, void* this_pointer)
 
 void character::Update(SDL_Event event)
 {
+
+	checkCollisions();
+
 	if (jumping)
 	{
 		DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
@@ -122,6 +125,14 @@ character::character(gameBase* gameBases, texture2D* texture)
 	game->hookFunctionCharacter[POSTTICK].push_back(&updateCharacter);
 
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
+
+	for (int x = 0; x < 100; x++)
+	{
+		for (int y = 0; y < 100; y++)
+		{
+			collisionCache[x].insert(make_pair(y, false));
+		}
+	}
 }
 
 SDL_Rect character::getPosition()
@@ -140,6 +151,34 @@ SDL_Rect character::getRenderBox()
 	return returnValue;
 }
 
+
+void character::checkCollisions()
+{
+	int curPosX = DestR.x / 32, curPosY = DestR.y / 23;
+
+	map<int, map<int, tile*>>* curInstance = tiles::Instance()->getTileMap();
+
+	for (int x = -3; x <= 3; x++) 
+	{
+
+		for (int y = -3; y <= 3; y++) {
+
+			int actualX = curPosX - x, actualY = curPosY - y;
+			if (curInstance->size() < actualX || curInstance->at(actualX).size() < actualY)
+			{
+				collisionCache[actualX][actualY] = false;
+				continue;
+			}
+
+			tile* curTile = curInstance->at(actualX).at(actualY);
+
+			collisionCache[actualX][actualY] = (curTile != NULL);
+
+		}
+
+	}
+
+}
 
 character::~character()
 {

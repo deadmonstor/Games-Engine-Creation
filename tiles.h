@@ -13,7 +13,6 @@ class tile
 		void render();
 
 	private:
-		map<int, map<int, bool>> collisionCache;
 		SDL_Texture* curTexture;
 		SDL_Rect imgPartRect;
 		SDL_Rect DestR;
@@ -28,6 +27,7 @@ class tiles
 
 		void render();
 		static tiles* Instance();
+		map<int, map<int, tile*>>* getTileMap();
 
 	private:
 		map<int, map<int, tile*>> tileMap;

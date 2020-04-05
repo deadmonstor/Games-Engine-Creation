@@ -41,8 +41,6 @@ int main(int argc, char* args[])
 		SDL_Event e;
 		SDL_PollEvent(&e);
 
-		cout << deltaTime << endl;
-
 		game->shouldQuit = game->Update(e, deltaTime);
 
 	}

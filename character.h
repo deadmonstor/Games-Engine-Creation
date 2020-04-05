@@ -6,6 +6,8 @@
 	#include "main.h"
 	#include "texture.h"
 	#include "soundManager.h"
+	#include "tiles.h"
+	#include <utility>
 
 	#define JUMP_FORCE 200
 	#define JUMP_FORCE_DECREMENT 400
@@ -25,6 +27,7 @@
 			void Update(SDL_Event event);
 			void Jump();
 			void addGravity(SDL_Event event, float deltaTime);
+			void checkCollisions();
 
 			bool canMove;
 
@@ -41,6 +44,7 @@
 
 			FACING curFacing;
 			map<SDL_Keycode, bool> curDown;
+			map<int, map<int, bool>> collisionCache;
 
 	};
 
