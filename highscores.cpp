@@ -6,6 +6,11 @@
 
 highscores* highscores::mInstance = NULL;
 
+string curScoreString;
+SDL_Surface* surfaceMessage;
+SDL_Texture* Message;
+SDL_Rect Message_rect;
+
 highscores* highscores::Instance()
 {
 	if (!mInstance) 
@@ -24,17 +29,19 @@ highscores::highscores()
 void highscores::render()
 {
 
-    string curScoreString = "Score: " + to_string(curScore);
+	if (!surfaceMessage) 
+	{
+		curScoreString = "Score: " + to_string(curScore);
 
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(gameBase::Instance()->Sans, curScoreString.c_str(), { 0,0,0 });
+		surfaceMessage = TTF_RenderText_Solid(gameBase::Instance()->Sans, curScoreString.c_str(), { 0,0,0 });
 
-    SDL_Texture* Message = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage);
+		Message = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage);
 
-    SDL_Rect Message_rect;
-    Message_rect.x = 0;
-    Message_rect.y = -20;
-    Message_rect.w = 140;
-    Message_rect.h = 80;
+		Message_rect.x = 0;
+		Message_rect.y = -20;
+		Message_rect.w = 140;
+		Message_rect.h = 80;
+	}
 
     SDL_RenderCopy(gameBase::Instance()->gRenderer, Message, NULL, &Message_rect);
 }

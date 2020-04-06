@@ -110,11 +110,11 @@ bool gameBase::Update(SDL_Event event, float deltaTime)
 
 	gameBase::PushEvent(event.type, event);
 
+	gameScreenManager->update();
+
 	a->type = POSTTICK;
 
 	gameBase::PushEvent(POSTTICK, *a);
-
-	gameScreenManager->update();
 
 	switch (event.type)
 	{
