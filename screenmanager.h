@@ -1,10 +1,11 @@
 #pragma once
+#include <algorithm>
+
 #include "main.h"
-#include "character.h"
 #include "texture.h"
+#include "character.h"
 #include "enemy.h"
 #include "collisions.h"
-#include <algorithm>
 
 #ifndef _SCREENMANAGER_H
 	#define _SCREENMANAGER_H

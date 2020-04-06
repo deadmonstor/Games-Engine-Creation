@@ -1,9 +1,12 @@
 #pragma once
 #include "main.h"
 
+#ifndef _HIGHSCORES_H
+	#define _HIGHSCORES_H
 
-#ifndef highscores_H
-	#define highscores_H
+	#include <string>
+	#include <fstream>
+	#include <regex>
 
 	class highscores
 	{

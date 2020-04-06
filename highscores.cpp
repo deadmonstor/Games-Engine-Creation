@@ -1,8 +1,5 @@
 
 #include "highscores.h"
-#include <string>
-#include <fstream>
-#include <regex>
 
 highscores* highscores::mInstance = NULL;
 

@@ -29,6 +29,11 @@ void tile::render()
     SDL_RenderCopyEx(gameBase::Instance()->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, SDL_FLIP_NONE);
 }
 
+SDL_Rect tile::getCollisionBox()
+{
+    return DestR;
+}
+
 /*
     =======================TILES=======================
 */
@@ -48,7 +53,10 @@ tiles::tiles()
 
     for (int x = 0; x < 100; x++)
     {
-        tile* tiles = new tile(x, 5);
+        tile* tiles = new tile(x, 0);
+        tileMap[x][1] = tiles;
+
+        tiles = new tile(x, 5);
         tileMap[x][5] = tiles;
     }
 }

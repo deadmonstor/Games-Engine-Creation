@@ -17,8 +17,6 @@ void character::keyDown(SDL_Event curEvent)
 
 	curDown[curEvent.key.keysym.sym] = true;
 
-	if (!canMove){ return; }
-
 }
 
 static void keyDowns(SDL_Event event, void* this_pointer)
@@ -65,7 +63,17 @@ void character::Update(SDL_Event event)
 
 	if (jumping)
 	{
-		DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
+		pair<int, int> curPos = getTilePos(0, -(JUMP_FORCE * *(float*)event.user.data1));
+		int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
+
+		tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+
+		character* self = static_cast<character*>(this);
+
+		if (!collisionCache[curPosX][curPosY] )//|| collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile) )
+		{
+			DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
+		}
 
 		jumpForce -= JUMP_FORCE_DECREMENT * *(float*)event.user.data1;
 
@@ -100,16 +108,37 @@ static void updateCharacter(SDL_Event event, void* this_pointer)
 	self->Update(event);
 }
 
+pair<int, int> character::getTilePos()
+{
+	int curPosX = DestR.x / 32, curPosY = DestR.y / 23;
+
+	return make_pair(curPosX, curPosY);
+}
+
+pair<int, int> character::getTilePos(int x, int y)
+{
+	int curPosX = (DestR.x + x) / 32, curPosY = (DestR.y + y) / 23;
+
+	return make_pair(curPosX, curPosY);
+}
+
 void character::addGravity(SDL_Event event, float deltaTime)
 {
-	if (DestR.y < (SCREEN_HEIGHT - 60))
+
+	pair<int, int> curPos = getTilePos(0, (200.0f * *(float*)event.user.data1));
+	int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
+
+	tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+
+	character* self = static_cast<character*>(this);
+
+	if (DestR.y < (SCREEN_HEIGHT - 60) && !collisionCache[curPosX][curPosY])
 	{
 		DestR.y += (200.0f * *(float*)event.user.data1);
 		canJump = false;
 	}
 	else
 	{
-		DestR.y = SCREEN_HEIGHT - 60;
 		canJump = true;
 	}
 }
@@ -125,6 +154,8 @@ character::character(gameBase* gameBases, texture2D* texture)
 	game->hookFunctionCharacter[POSTTICK].push_back(&updateCharacter);
 
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
+
+	DestR.y = 40;
 
 	for (int x = 0; x < 100; x++)
 	{
@@ -154,7 +185,9 @@ SDL_Rect character::getRenderBox()
 
 void character::checkCollisions()
 {
-	int curPosX = DestR.x / 32, curPosY = DestR.y / 23;
+
+	pair<int, int> curPos = getTilePos();
+	int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
 
 	map<int, map<int, tile*>>* curInstance = tiles::Instance()->getTileMap();
 

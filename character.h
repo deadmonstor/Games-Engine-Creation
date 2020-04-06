@@ -3,10 +3,13 @@
 #ifndef _CHARACTER_H
 
 	#define _CHARACTER_H
+
 	#include "main.h"
 	#include "texture.h"
 	#include "soundManager.h"
 	#include "tiles.h"
+	#include "collisions.h"
+
 	#include <utility>
 
 	#define JUMP_FORCE 200
@@ -28,6 +31,8 @@
 			void Jump();
 			void addGravity(SDL_Event event, float deltaTime);
 			void checkCollisions();
+			pair<int, int> getTilePos();
+			pair<int, int> getTilePos(int x, int y);
 
 			bool canMove;
 

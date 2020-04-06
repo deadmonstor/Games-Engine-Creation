@@ -1,5 +1,4 @@
 #include "collisions.h"
-#include "character.h"
 
 collisions* collisions::mInstance = NULL;
 
@@ -67,6 +66,14 @@ bool collisions::Box(character* character1, enemy* character2)
 	SDL_Rect character2Pos = character2->getRenderBox();
 
 	return boxInternal(character1Pos, character2Pos);
+}
+
+bool collisions::Box(character* character1, tile* tile)
+{
+	SDL_Rect character1Pos = character1->getRenderBox();
+	SDL_Rect tilePos = tile->getCollisionBox();
+
+	return boxInternal(character1Pos, tilePos);
 }
 
 collisions::~collisions()

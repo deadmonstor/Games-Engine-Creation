@@ -1,14 +1,16 @@
 #pragma once
-
 #include "main.h"
 
-class soundManager
-{
+#ifndef _SOUNDMANAGER_H
+	#define _SOUNDMANAGER_H
+
+	class soundManager
+	{
 	public:
 		~soundManager();
 
 		static soundManager* Instance();
-		
+
 		void playSound(int id);
 		void playSound(int id, int loops);
 		void setVolume(int id, int volume);
@@ -18,5 +20,6 @@ class soundManager
 		soundManager();
 		vector<string> _waveFileNames;
 		vector<Mix_Chunk*> _sample;
-};
+	};
 
+#endif // !_SOUNDMANAGER_H

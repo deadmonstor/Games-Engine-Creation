@@ -1,9 +1,9 @@
-#include "main.h"
 #include "texture.h"
-#include "screenmanager.h"
 #include "tiles.h"
+#include "screenmanager.h"
 #include "highscores.h"
-#include <string>
+#include "main.h"
+
 
 texture2D* texture;
 screenManager* gameScreenManager;
