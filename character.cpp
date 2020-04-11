@@ -1,4 +1,5 @@
 #include "character.h"
+#include <cmath>
 
 void character::Jump()
 {
@@ -59,18 +60,25 @@ static void renderCharacters(SDL_Event event, void* this_pointer)
 void character::Update(SDL_Event event)
 {
 
+
 	checkCollisions();
 
 	if (jumping)
 	{
-		pair<int, int> curPos = getTilePos(0, -(JUMP_FORCE * *(float*)event.user.data1));
+		pair<int, int> curPos = getTilePos(0, -48);
 		int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
 
-		tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+		if (curPosX < 0 || curPosY < 0) 
+		{
+			jumping = false;
+			return;
+		}
 
+		tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+		
 		character* self = static_cast<character*>(this);
 
-		if (!collisionCache[curPosX][curPosY] )//|| collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile) )
+		if (!collisionCache[curPosX][curPosY] || collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile) )
 		{
 			DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
 		}
@@ -88,13 +96,40 @@ void character::Update(SDL_Event event)
 	
 	if (curDown[SDLK_a])
 	{
+		pair<int, int> getTileLeft = getTilePos(-32, 0);
+		int curLeftPosX = get<0>(getTileLeft), curLeftPosY = get<1>(getTileLeft);
+
+		if (curLeftPosX < 0 || curLeftPosY < 0 || DestR.x == 0)
+			return;
+
+		tile* curTileLeft = tiles::Instance()->getTileMap()->at(curLeftPosX).at(curLeftPosY);
+
+		character* self = static_cast<character*>(this);
+
+		if (curTileLeft != nullptr && collisions::Instance()->Box(self, curTileLeft))
+			return;
+
 		DestR.x--;
-		curFacing = FACING::LEFT;
+		curFacing = LEFT;
 	}
 	else if (curDown[SDLK_d])
 	{
+
+		pair<int, int> getTileLeft = getTilePos(32, 0);
+		int curRightPosX = get<0>(getTileLeft), curRightPosZ = get<1>(getTileLeft);
+
+		if (curRightPosX < 0 || curRightPosZ < 0)
+			return;
+
+		tile* curTileRight = tiles::Instance()->getTileMap()->at(curRightPosX).at(curRightPosZ);
+
+		character* self = static_cast<character*>(this);
+
+		if (curTileRight != nullptr && collisions::Instance()->Box(self, curTileRight))
+			return;
+
 		DestR.x++;
-		curFacing = FACING::RIGHT;
+		curFacing = RIGHT;
 	}
 
 	if (curDown[SDLK_SPACE])
@@ -110,14 +145,14 @@ static void updateCharacter(SDL_Event event, void* this_pointer)
 
 pair<int, int> character::getTilePos()
 {
-	int curPosX = DestR.x / 32, curPosY = DestR.y / 23;
+	int curPosX = round((DestR.x / 32.0)), curPosY = round((DestR.y / 32.0));
 
 	return make_pair(curPosX, curPosY);
 }
 
 pair<int, int> character::getTilePos(int x, int y)
 {
-	int curPosX = (DestR.x + x) / 32, curPosY = (DestR.y + y) / 23;
+	int curPosX = round(((DestR.x + x) / 32.0)), curPosY = round(((DestR.y + y) / 32.0));
 
 	return make_pair(curPosX, curPosY);
 }
@@ -125,15 +160,21 @@ pair<int, int> character::getTilePos(int x, int y)
 void character::addGravity(SDL_Event event, float deltaTime)
 {
 
-	pair<int, int> curPos = getTilePos(0, (200.0f * *(float*)event.user.data1));
-	int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
+	pair<int, int> getTileBelow = getTilePos(0, 32);
+	int curPosTileUnderX = get<0>(getTileBelow), curPosTileUnderY = get<1>(getTileBelow);
 
-	tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+	tile* curTileUnder = tiles::Instance()->getTileMap()->at(curPosTileUnderX).at(curPosTileUnderY);
 
 	character* self = static_cast<character*>(this);
 
-	if (DestR.y < (SCREEN_HEIGHT - 60) && !collisionCache[curPosX][curPosY])
+	if (DestR.y < (SCREEN_HEIGHT - 60))
 	{
+		if (curTileUnder != nullptr && collisions::Instance()->Box(self, curTileUnder))
+		{
+			canJump = true;
+			return;
+		}
+
 		DestR.y += (200.0f * *(float*)event.user.data1);
 		canJump = false;
 	}

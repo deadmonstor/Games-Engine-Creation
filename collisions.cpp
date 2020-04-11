@@ -46,10 +46,10 @@ bool collisions::Circle(character* character1, enemy* character2)
 
 bool boxInternal(SDL_Rect character1Pos, SDL_Rect character2Pos)
 {
-	return (character1Pos.x + (character1Pos.w / 2) > character2Pos.x &&
-		character1Pos.x + (character1Pos.w / 2) < character2Pos.x + character2Pos.w &&
-		character1Pos.y + (character1Pos.h / 2) > character2Pos.y &&
-		character1Pos.y + (character1Pos.h / 2) < character2Pos.y + character2Pos.h);
+	return (character1Pos.x < character2Pos.x + character2Pos.w &&
+		character1Pos.x + character1Pos.w > character2Pos.x &&
+		character1Pos.y < character2Pos.y + character2Pos.h &&
+		character1Pos.y + character1Pos.w > character2Pos.y);
 }
 
 bool collisions::Box(character* character1, character* character2)
