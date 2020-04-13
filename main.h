@@ -39,6 +39,8 @@
 	#include <map>
 	#include <vector>
 	#include <time.h>
+	#include <regex>
+	#include <fstream>
 
 	class gameBase {
 

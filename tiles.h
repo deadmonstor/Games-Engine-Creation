@@ -1,11 +1,12 @@
 #pragma once
 
 #include "main.h"
-#include "texture.h"
 
 #ifndef _TILES_H
 	#define _TILES_H
 	#define SIZE 32
+
+	#include "texture.h"
 
 	class tile
 	{
@@ -13,6 +14,7 @@
 			int x, y;
 
 			tile(int _x, int _y);
+			tile(int _x, int _y, string textureName);
 			void render();
 			SDL_Rect getCollisionBox();
 
@@ -30,6 +32,7 @@
 			~tiles();
 
 			void render();
+			void loadFromFile(string fileName);
 			static tiles* Instance();
 			map<int, map<int, tile*>>* getTileMap();
 

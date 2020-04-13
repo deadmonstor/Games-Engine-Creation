@@ -5,8 +5,6 @@
 	#define _HIGHSCORES_H
 
 	#include <string>
-	#include <fstream>
-	#include <regex>
 
 	class highscores
 	{

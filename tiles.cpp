@@ -19,6 +19,19 @@ tile::tile(int _x, int _y)
 
 }
 
+tile::tile(int _x, int _y, string textureName)
+{
+    x = _x;
+    y = _y;
+
+    curTexture = texture2D::Instance()->LoadTextureFromFile("Images/" + textureName);
+
+    imgPartRect.w = SIZE;
+    imgPartRect.h = SIZE;
+    DestR.w = SIZE;
+    DestR.h = SIZE;
+}
+
 void tile::render()
 {
 
@@ -51,14 +64,7 @@ tiles::tiles()
         }
     }
 
-    for (int x = 0; x < 100; x++)
-    {
-        tile* tiles = new tile(x, 0);
-        tileMap[x][1] = tiles;
-
-        tiles = new tile(x, 5);
-        tileMap[x][5] = tiles;
-    }
+    loadFromFile("mapOne");
 }
 
 tiles::~tiles()
@@ -66,6 +72,36 @@ tiles::~tiles()
 
 }
 
+fstream mapFile;
+string curLine;
+void tiles::loadFromFile(string fileName)
+{
+    mapFile.open("maps/" + fileName + ".txt");
+
+    if (!mapFile.good())
+    {
+        cout << "No map found, making file " << endl;
+        mapFile.open("maps/" + fileName + ".txt", fstream::in | fstream::out | fstream::trunc);;
+
+    }
+
+    while (getline(mapFile, curLine))
+    {
+        regex a(R"(\|(.*),(.*)\|(.*)\|(.))");
+        smatch matches;
+
+        if (regex_match(curLine, matches, a)) {
+
+            tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), matches[3]);
+            tileMap[stoi(matches[1])][stoi(matches[2])] = curTile;
+        }
+
+    }
+
+    mapFile.close();
+
+
+}
 
 tiles* tiles::Instance()
 {
