@@ -1,14 +1,24 @@
 #include "screenmanager.h"
 
-screenManager::screenManager(gameBase* gameBases, texture2D* textures) {
-	game = gameBases;
-	texture = textures;
+screenManager* screenManager::mInstance = NULL;
+
+screenManager::screenManager() {
+	game = gameBase::Instance();
+	texture = texture2D::Instance();
 
 	LocalPlayer = new character(game, texture);
-	setupLevel(SCREENS::SCREEN_LEVEL1); // Change to intro on start
+	setupLevel(SCREENS::SCREEN_MENU); // Change to intro on start
 }
 
 screenManager::~screenManager() { }
+
+screenManager* screenManager::Instance()
+{
+	if (!mInstance)
+		mInstance = new screenManager;
+
+	return mInstance;
+}
 
 void screenManager::setupLevel(SCREENS screen)
 {
@@ -35,6 +45,24 @@ void screenManager::setupLevel(SCREENS screen)
 	// Set position of actors
 	// TODO
 
+	switch (screen)
+	{
+
+		case SCREENS::SCREEN_MENU:
+		{
+			LocalPlayer->ignoreInput = true;
+			break;
+		}
+
+		case SCREENS::SCREEN_LEVEL1: 
+		{
+			soundManager::Instance()->setVolume(0, 5);
+			soundManager::Instance()->playSound(0, -1);
+			break;
+		}
+
+	}
+
 	a->type = POSTMAPCHANGE;
 
 	game->PushEvent(POSTMAPCHANGE, *a);
@@ -42,9 +70,77 @@ void screenManager::setupLevel(SCREENS screen)
 	delete a;
 
 	curScreen = screen;
+}
 
-	soundManager::Instance()->setVolume(0, 20);
-	soundManager::Instance()->playSound(0, -1);
+void screenManager::render()
+{
+
+	switch (curScreen) {
+
+		case SCREENS::SCREEN_MENU:
+		{
+			renderMenuScreen();
+			break;
+		}
+
+	}
+
+}
+
+void screenManager::initText(int index, int width, int height)
+{
+	switch (index) {
+		case 0:
+		{
+			curString[index] = "MARIO BROS.";
+			colors[index] = { 211,70,6 };
+			Message_rect[index].w = 440;
+			Message_rect[index].h = 140;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 0.8);
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 4;
+			break;
+		}
+
+		case 1:
+		{
+			curString[index] = "Press Space to start game";
+			colors[index] = { 0,0,0 };
+			Message_rect[index].w = 480;
+			Message_rect[index].h = 70;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1.8);
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 3;
+			break;
+		}
+	}
+}
+
+void screenManager::renderMenuScreen()
+{
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (!surfaceMessage[i])
+		{
+
+			int w, h;
+
+			if (TTF_SizeText(gameBase::Instance()->Sans, curString[i].c_str(), &w, &h))
+			{
+				return;
+			}
+
+			initText(i, w, h);
+
+			screenManager::surfaceMessage[i] = TTF_RenderText_Blended(gameBase::Instance()->Sans, curString[i].c_str(), colors[i]);
+
+			Message[i] = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage[i]);
+		}
+
+		SDL_RenderCopy(gameBase::Instance()->gRenderer, Message[i], NULL, &Message_rect[i]);
+	}
+
 }
 
 void screenManager::update()

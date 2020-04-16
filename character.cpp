@@ -15,9 +15,8 @@ void character::Jump()
 
 void character::keyDown(SDL_Event curEvent)
 {
-
+	if (ignoreInput) return;
 	curDown[curEvent.key.keysym.sym] = true;
-
 }
 
 static void keyDowns(SDL_Event event, void* this_pointer)
@@ -28,6 +27,7 @@ static void keyDowns(SDL_Event event, void* this_pointer)
 
 void character::keyUp(SDL_Event curEvent)
 {
+	if (ignoreInput) return;
 	curDown[curEvent.key.keysym.sym] = false;
 }
 

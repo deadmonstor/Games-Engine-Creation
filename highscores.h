@@ -5,6 +5,7 @@
 	#define _HIGHSCORES_H
 
 	#include <string>
+	#include "screenmanager.h"
 
 	class highscores
 	{
@@ -33,6 +34,10 @@
 		
 
 			static highscores* mInstance;
+			string curScoreString;
+			SDL_Surface* surfaceMessage;
+			SDL_Texture* Message;
+			SDL_Rect Message_rect;
 
 	};
 

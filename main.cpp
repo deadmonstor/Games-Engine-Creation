@@ -23,7 +23,7 @@ int main(int argc, char* args[])
 
 	game->SDLInit();
 
-	gameScreenManager = new screenManager(game, texture);
+	gameScreenManager = screenManager::Instance();
 
 	while (!game->shouldQuit)
 	{
@@ -131,16 +131,15 @@ const int timeStart = time(NULL);
 void gameBase::Render()
 {
 
-	SDL_SetRenderDrawColor(gRenderer, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255); // TODO: Create a colour class so I don't have to do this
+	SDL_SetRenderDrawColor(gRenderer, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
 	SDL_RenderClear(gRenderer);
 
 
-	SDL_Rect renderLocation = { timeStart - time(NULL) , 0, 7168, SCREEN_HEIGHT + 600 }; // TODO: Create a Vector() and Location construction for this I don't want to be creating array's everywhere
-
-	//SDL_RenderCopyEx(gRenderer, gTexture, NULL, &renderLocation, 0, NULL, SDL_FLIP_NONE);
+	SDL_Rect renderLocation = { timeStart - time(NULL) , 0, 7168, SCREEN_HEIGHT + 600 };
 
 	tiles::Instance()->render();
 	highscores::Instance()->render();
+	screenManager::Instance()->render();
 	gameBase::PushEvent(RENDERUPDATE);
 
 	SDL_RenderPresent(gRenderer);
@@ -213,7 +212,7 @@ bool gameBase::SDLInit()
 	}
 
 	if (Sans == NULL)
-		Sans = TTF_OpenFont("OpenSans-Regular.ttf", 24);
+		Sans = TTF_OpenFont("font/supermariobros.ttf", 100);
 
 	int result = Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 2048);
 	if (result < 0)

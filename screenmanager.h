@@ -13,13 +13,18 @@
 	class screenManager {
 
 		public:
-			screenManager(gameBase* gameBases, texture2D* textures);
+			screenManager();
 			~screenManager();
 
 			void setupLevel(SCREENS screen);
 			void update();
+			void render();
+			void initText(int index, int width, int height);
+			static screenManager* Instance();
 
 			character* LocalPlayer = NULL;
+			SCREENS curScreen = SCRENE_INTRO;
+
 
 		private:
 
@@ -27,10 +32,18 @@
 			vector< enemy* > enemyTable;
 			texture2D* texture = NULL;
 
-			SCREENS curScreen = SCRENE_INTRO;
+			static screenManager* mInstance;
 
 			
 			void updateScreenOne();
+
+
+			void renderMenuScreen();
+			string curString [2];
+			SDL_Surface* surfaceMessage [2];
+			SDL_Texture* Message [2];
+			SDL_Rect Message_rect [2];
+			SDL_Color colors[2];
 	};
 
 #endif

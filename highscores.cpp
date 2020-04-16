@@ -3,11 +3,6 @@
 
 highscores* highscores::mInstance = NULL;
 
-string curScoreString;
-SDL_Surface* surfaceMessage;
-SDL_Texture* Message;
-SDL_Rect Message_rect;
-
 highscores* highscores::Instance()
 {
 	if (!mInstance) 
@@ -26,7 +21,9 @@ highscores::highscores()
 void highscores::render()
 {
 
-	if (!surfaceMessage) 
+	if (screenManager::Instance()->curScreen == SCREENS::SCREEN_MENU) return;
+
+	if (!surfaceMessage)
 	{
 		curScoreString = "Score: " + to_string(curScore);
 

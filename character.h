@@ -35,6 +35,7 @@
 			pair<int, int> getTilePos(int x, int y);
 
 			bool canMove;
+			bool ignoreInput;
 
 		private:
 
