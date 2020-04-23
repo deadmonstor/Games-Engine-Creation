@@ -6,7 +6,7 @@ SDL_Rect imgPartRects;
 SDL_Rect DestRs;
 
 
-void renderEnemy(SDL_Event aaaaaaa)
+void renderEnemy(SDL_Event _)
 {
 	imgPartRects.x = 126;
 	imgPartRects.y = 0;

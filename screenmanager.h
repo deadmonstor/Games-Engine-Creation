@@ -23,7 +23,7 @@
 			static screenManager* Instance();
 
 			character* LocalPlayer = NULL;
-			SCREENS curScreen = SCRENE_INTRO;
+			SCREENS curScreen = SCREEN_MENU;
 
 
 		private:

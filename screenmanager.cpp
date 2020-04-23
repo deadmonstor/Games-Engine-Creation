@@ -7,7 +7,7 @@ screenManager::screenManager() {
 	texture = texture2D::Instance();
 
 	LocalPlayer = new character(game, texture);
-	setupLevel(SCREENS::SCREEN_MENU); // Change to intro on start
+	setupLevel(SCREENS::SCREEN_MENU);
 }
 
 screenManager::~screenManager() { }
@@ -44,6 +44,8 @@ void screenManager::setupLevel(SCREENS screen)
 
 	// Set position of actors
 	// TODO
+
+	LocalPlayer->ignoreInput = false;
 
 	switch (screen)
 	{

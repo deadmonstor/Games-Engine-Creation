@@ -14,7 +14,7 @@
 			int x, y;
 
 			tile(int _x, int _y);
-			tile(int _x, int _y, string textureName);
+			tile(int _x, int _y, string *textureName);
 			void render();
 			SDL_Rect getCollisionBox();
 

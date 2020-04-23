@@ -103,7 +103,6 @@ void texture2D::FreeTexture(SDL_Texture* texture)
 	{
 
 		SDL_DestroyTexture(texture);
-		texture = NULL;
 		textureList[path] = NULL;
 
 	}

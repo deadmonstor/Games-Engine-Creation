@@ -14,6 +14,8 @@ highscores* highscores::Instance()
 
 highscores::highscores()
 {
+	Message = nullptr;
+	surfaceMessage = nullptr;
 	readFile();
 	sortScores();
 }
@@ -82,11 +84,9 @@ void highscores::readFile()
 void highscores::writeFile()
 {
 
-	int i = 0;
-
 	myfile.open("highScores/scores.txt");
 
-	for (int i = 0; i <= MAX_SCORES; ++i) {
+	for (int i = 0; i < MAX_SCORES; ++i) {
 
 		if (scores[i].score == 0)
 			continue;
@@ -111,7 +111,7 @@ void highscores::addScore(string name, int points)
 void highscores::displayScores()
 {
 
-	for (int i = 0; i <= MAX_SCORES; ++i) {
+	for (int i = 0; i < MAX_SCORES; ++i) {
 
 		if (scores[i].score == 0)
 			continue;

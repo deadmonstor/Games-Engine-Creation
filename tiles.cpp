@@ -19,12 +19,12 @@ tile::tile(int _x, int _y)
 
 }
 
-tile::tile(int _x, int _y, string textureName)
+tile::tile(int _x, int _y, string *textureName)
 {
     x = _x;
     y = _y;
 
-    curTexture = texture2D::Instance()->LoadTextureFromFile("Images/" + textureName);
+    curTexture = texture2D::Instance()->LoadTextureFromFile("Images/" + *textureName);
 
     imgPartRect.w = SIZE;
     imgPartRect.h = SIZE;
@@ -92,7 +92,9 @@ void tiles::loadFromFile(string fileName)
 
         if (regex_match(curLine, matches, a)) {
 
-            tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), matches[3]);
+            string curTexture = matches[3];
+
+            tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), &curTexture);
             tileMap[stoi(matches[1])][stoi(matches[2])] = curTile;
         }
 
