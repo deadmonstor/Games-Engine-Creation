@@ -63,13 +63,10 @@ tiles::tiles()
             tileMap[x].insert(make_pair(y, nullptr));
         }
     }
-
-    loadFromFile("mapOne");
 }
 
 tiles::~tiles()
 {
-
 }
 
 fstream mapFile;
@@ -108,9 +105,30 @@ void tiles::loadFromFile(string fileName)
 tiles* tiles::Instance()
 {
     if (!mInstance)
-        mInstance = new tiles;
+        mInstance = new tiles();
 
     return mInstance;
+}
+
+void tiles::wipeTiles()
+{
+    map<int, map<int, tile*>>::iterator iteratorX;
+
+    for (iteratorX = tileMap.begin(); iteratorX != tileMap.end(); iteratorX++)
+    {
+        map<int, tile*>::iterator iteratorY;
+
+        for (iteratorY = iteratorX->second.begin(); iteratorY != iteratorX->second.end(); iteratorY++)
+        {
+
+            if (iteratorY->second != nullptr)
+            {
+                delete iteratorY->second;
+            }
+
+        }
+
+    }
 }
 
 map<int, map<int, tile*>>* tiles::getTileMap()
@@ -127,7 +145,7 @@ void tiles::render()
     {
         map<int, tile*>::iterator iteratorY;
 
-        for (iteratorY = iteratorX->second.begin(); iteratorY != iteratorX->second.end(); iteratorY++) // MAX: 20
+        for (iteratorY = iteratorX->second.begin(); iteratorY != iteratorX->second.end(); iteratorY++)
         {
 
             if (iteratorY->second != nullptr)

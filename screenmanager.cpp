@@ -2,12 +2,24 @@
 
 screenManager* screenManager::mInstance = NULL;
 
+static void keyDown(SDL_Event curEvent)
+{
+	screenManager* curInstance = screenManager::Instance();
+	if (curInstance->curScreen == SCREENS::SCREEN_MENU &&
+		curEvent.key.keysym.sym == SDLK_SPACE)
+	{
+		curInstance->setupLevel(SCREENS::SCREEN_LEVEL1);
+	}
+}
+
 screenManager::screenManager() {
 	game = gameBase::Instance();
 	texture = texture2D::Instance();
 
 	LocalPlayer = new character(game, texture);
 	setupLevel(SCREENS::SCREEN_MENU);
+
+	gameBase::Instance()->hookFunction[SDL_KEYDOWN].push_back(&keyDown);
 }
 
 screenManager::~screenManager() { }
@@ -38,9 +50,13 @@ void screenManager::setupLevel(SCREENS screen)
 
 	}
 
+	tiles::Instance()->wipeTiles();
+
 	//Setup new actors
 	LocalPlayer = new character(game, texture);
 	enemyTable.push_back(new enemy(game, texture));
+
+	tiles::Instance()->loadFromFile("mapOne");
 
 	// Set position of actors
 	// TODO

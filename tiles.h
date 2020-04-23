@@ -33,6 +33,7 @@
 
 			void render();
 			void loadFromFile(string fileName);
+			void wipeTiles();
 			static tiles* Instance();
 			map<int, map<int, tile*>>* getTileMap();
 
