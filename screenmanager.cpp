@@ -112,23 +112,23 @@ void screenManager::initText(int index, int width, int height)
 		{
 			curString[index] = "MARIO BROS.";
 			colors[index] = { 211,70,6 };
-			Message_rect[index].w = 440;
+			Message_rect[index].w = 580;
 			Message_rect[index].h = 140;
 
 			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 0.8);
-			Message_rect[index].x = (SCREEN_WIDTH + width) / 4;
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 15;
 			break;
 		}
 
 		case 1:
 		{
 			curString[index] = "Press Space to start game";
-			colors[index] = { 0,0,0 };
-			Message_rect[index].w = 480;
+			colors[index] = { 255,255,255 };
+			Message_rect[index].w = 580;
 			Message_rect[index].h = 70;
 
 			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1.8);
-			Message_rect[index].x = (SCREEN_WIDTH + width) / 3;
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 9;
 			break;
 		}
 	}
@@ -151,7 +151,7 @@ void screenManager::renderMenuScreen()
 
 			initText(i, w, h);
 
-			screenManager::surfaceMessage[i] = TTF_RenderText_Blended(gameBase::Instance()->Sans, curString[i].c_str(), colors[i]);
+			screenManager::surfaceMessage[i] = TTF_RenderText_Solid(gameBase::Instance()->Sans, curString[i].c_str(), colors[i]);
 
 			Message[i] = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage[i]);
 		}
