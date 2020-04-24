@@ -124,6 +124,7 @@ void tiles::wipeTiles()
             if (iteratorY->second != nullptr)
             {
                 delete iteratorY->second;
+                tileMap[iteratorX->first][iteratorY->first] = nullptr;
             }
 
         }

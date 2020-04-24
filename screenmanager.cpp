@@ -32,6 +32,13 @@ screenManager* screenManager::Instance()
 	return mInstance;
 }
 
+string mapArray[3] =
+{
+	"mapOne",
+	"mapOne",
+	"mapTwo"
+};
+
 void screenManager::setupLevel(SCREENS screen)
 {
 
@@ -56,7 +63,7 @@ void screenManager::setupLevel(SCREENS screen)
 	LocalPlayer = new character(game, texture);
 	enemyTable.push_back(new enemy(game, texture));
 
-	tiles::Instance()->loadFromFile("mapOne");
+	tiles::Instance()->loadFromFile(mapArray[(int)screen]);
 
 	// Set position of actors
 	// TODO
