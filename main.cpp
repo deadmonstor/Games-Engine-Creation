@@ -8,6 +8,20 @@
 texture2D* texture;
 screenManager* gameScreenManager;
 
+bool test[1000][1000];
+static void uwuwuwu(SDL_Event curEvent)
+{
+	int x = curEvent.button.x / 32;
+	int y = curEvent.button.y / 32;
+
+	if (curEvent.button.button == SDL_BUTTON_LEFT && !test[x][y]) 
+	{
+		test[x][y] = true;
+		std::cout << "|" << x << "," << y << "|tile.png|1" << endl;
+	}
+
+}
+
 int main(int argc, char* args[])
 {
 	gameBase* game = gameBase::Instance();
@@ -22,6 +36,8 @@ int main(int argc, char* args[])
 	float deltaTime = 0;
 
 	game->SDLInit();
+
+	game->hookFunction[SDL_MOUSEBUTTONDOWN].push_back(&uwuwuwu);
 
 	gameScreenManager = screenManager::Instance();
 
@@ -99,6 +115,7 @@ void gameBase::PushEvent(int id, SDL_Event event)
 	}
 }
 
+
 bool gameBase::Update(SDL_Event event, float deltaTime)
 {
 
@@ -131,7 +148,7 @@ const int timeStart = time(NULL);
 void gameBase::Render()
 {
 
-	SDL_SetRenderDrawColor(gRenderer, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+	SDL_SetRenderDrawColor(gRenderer, (Uint8)87, (Uint8)120, (Uint8)255, (Uint8)255);
 	SDL_RenderClear(gRenderer);
 
 

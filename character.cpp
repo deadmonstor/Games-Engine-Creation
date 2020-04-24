@@ -8,7 +8,7 @@ void character::Jump()
 		jumpForce = JUMP_FORCE;
 		jumping = true;
 		canJump = false;
- 		soundManager::Instance()->setVolume(1, 5);
+ 		soundManager::Instance()->setVolume(1, 0);
 		soundManager::Instance()->playSound(1);
 	}
 }
@@ -59,13 +59,11 @@ static void renderCharacters(SDL_Event event, void* this_pointer)
 
 void character::Update(SDL_Event event)
 {
-
-
 	checkCollisions();
 
 	if (jumping)
 	{
-		pair<int, int> curPos = getTilePos(0, -48);
+		pair<int, int> curPos = getTilePos(0, -32);
 		int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
 
 		if (curPosX < 0 || curPosY < 0) 
@@ -99,37 +97,43 @@ void character::Update(SDL_Event event)
 		pair<int, int> getTileLeft = getTilePos(-32, 0);
 		int curLeftPosX = get<0>(getTileLeft), curLeftPosY = get<1>(getTileLeft);
 
-		if (curLeftPosX < 0 || curLeftPosY < 0 || DestR.x == 0)
-			return;
+		if (curLeftPosX >= 0 && curLeftPosY >= 0)
+		{
+			tile* curTileLeft = tiles::Instance()->getTileMap()->at(curLeftPosX).at(curLeftPosY);
 
-		tile* curTileLeft = tiles::Instance()->getTileMap()->at(curLeftPosX).at(curLeftPosY);
+			character* self = static_cast<character*>(this);
 
-		character* self = static_cast<character*>(this);
+			if (curTileLeft == nullptr || curTileLeft != nullptr && !collisions::Instance()->Box(self, curTileLeft))
+			{
+				DestR.x--;
+				curFacing = LEFT;
+			}
 
-		if (curTileLeft != nullptr && collisions::Instance()->Box(self, curTileLeft))
-			return;
-
-		DestR.x--;
-		curFacing = LEFT;
+		}
 	}
-	else if (curDown[SDLK_d])
+	
+	if (curDown[SDLK_d])
 	{
 
 		pair<int, int> getTileLeft = getTilePos(32, 0);
 		int curRightPosX = get<0>(getTileLeft), curRightPosZ = get<1>(getTileLeft);
 
-		if (curRightPosX < 0 || curRightPosZ < 0)
-			return;
+		if ((curRightPosX >= 0 && curRightPosZ >= 0) )
+		{
 
-		tile* curTileRight = tiles::Instance()->getTileMap()->at(curRightPosX).at(curRightPosZ);
+			tile* curTileRight = tiles::Instance()->getTileMap()->at(curRightPosX).at(curRightPosZ);
 
-		character* self = static_cast<character*>(this);
+			character* self = static_cast<character*>(this);
 
-		if (curTileRight != nullptr && collisions::Instance()->Box(self, curTileRight))
-			return;
+			if (curTileRight == nullptr || curTileRight != nullptr && !collisions::Instance()->Box(self, curTileRight))
+			{
+				DestR.x++;
+				curFacing = RIGHT;
+			}
 
-		DestR.x++;
-		curFacing = RIGHT;
+		};
+
+		
 	}
 
 	if (curDown[SDLK_SPACE])
@@ -152,7 +156,7 @@ pair<int, int> character::getTilePos()
 
 pair<int, int> character::getTilePos(int x, int y)
 {
-	int curPosX = round(((DestR.x + x) / 32.0)), curPosY = round(((DestR.y + y) / 32.0));
+	int curPosX = round((DestR.x + x) / 32.0), curPosY = round(((DestR.y + y) / 32.0));
 
 	return make_pair(curPosX, curPosY);
 }
