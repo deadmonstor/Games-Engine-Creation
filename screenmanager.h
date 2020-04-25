@@ -6,6 +6,7 @@
 #include "character.h"
 #include "enemy.h"
 #include "collisions.h"
+#include "highscores.h"
 
 #ifndef _SCREENMANAGER_H
 	#define _SCREENMANAGER_H
@@ -25,11 +26,12 @@
 			character* LocalPlayer = NULL;
 			SCREENS curScreen = SCREEN_MENU;
 
+			vector< enemy* > enemyTable;
+
 
 		private:
 
 			gameBase* game = NULL;
-			vector< enemy* > enemyTable;
 			texture2D* texture = NULL;
 
 			static screenManager* mInstance;

@@ -61,7 +61,7 @@ void screenManager::setupLevel(SCREENS screen)
 
 	//Setup new actors
 	LocalPlayer = new character(game, texture);
-	enemyTable.push_back(new enemy(game, texture));
+	enemyTable.push_back(new enemy());
 
 	tiles::Instance()->loadFromFile(mapArray[(int)screen]);
 
@@ -184,14 +184,25 @@ void screenManager::update()
 
 void screenManager::updateScreenOne()
 {
-	LocalPlayer->canMove = true;
-	
-	for (enemy* enemys : enemyTable) {
+	int curPosXLocalPlayer = get<0>(LocalPlayer->getTilePos()), curPosYLocalPlayer = get<1>(LocalPlayer->getTilePos());
+	for (enemy* enemys : enemyTable) 
+	{
 		
-		if (collisions::Instance()->Box(LocalPlayer, enemys))
+		int curPosXEnemy = get<0>(enemys->getTilePos()), curPosYEnemy = get<1>(enemys->getTilePos());
+		if (collisions::Instance()->Box(LocalPlayer, enemys) && !(curPosYLocalPlayer < curPosYEnemy))
 		{
-			LocalPlayer->canMove = false;
+			LocalPlayer->hasDied = true;
 			break;
+		}
+		else if (collisions::Instance()->Circle(LocalPlayer, enemys) && !LocalPlayer->hasDied)
+		{
+			std::vector<enemy*>::iterator position = std::find(enemyTable.begin(), enemyTable.end(), enemys);
+			if (position != enemyTable.end())
+				enemyTable.erase(position);
+
+			highscores::Instance()->curScore++;
+
+			delete enemys;
 		}
 
 	}

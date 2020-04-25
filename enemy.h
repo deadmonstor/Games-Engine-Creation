@@ -8,16 +8,36 @@
 	#include "texture.h"
 #endif
 
+#ifndef _COLLISIONS_H
+	#include "collisions.h"
+#endif
+
+#ifndef _TILES_H
+	#include "tiles.h"
+#endif
+
 #ifndef _ENEMY_H
 	#define _ENEMY_H
 	class enemy {
 
+	private:
+		SDL_Texture* curTexture;
+		SDL_Rect imgPartRects;
+		SDL_Rect DestRs;
+		FACING curFacing = FACING::RIGHT;
+		bool canMove;
+
 	public:
-		enemy(gameBase* gameBases, texture2D* textures);
+		enemy();
 		~enemy();
 
 		SDL_Rect getPosition();
 		SDL_Rect getRenderBox();
+		void render(SDL_Event _);
+		void update(SDL_Event _);
+		void addGravity(SDL_Event _, float deltaTime);
+		pair<int, int> getTilePos();
+		pair<int, int> getTilePos(int x, int y);
 	};
 
 #endif // !ENEMY_H

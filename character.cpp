@@ -15,7 +15,7 @@ void character::Jump()
 
 void character::keyDown(SDL_Event curEvent)
 {
-	if (ignoreInput) return;
+	if (ignoreInput || hasDied) return;
 	curDown[curEvent.key.keysym.sym] = true;
 }
 
@@ -27,7 +27,7 @@ static void keyDowns(SDL_Event event, void* this_pointer)
 
 void character::keyUp(SDL_Event curEvent)
 {
-	if (ignoreInput) return;
+	if (ignoreInput || hasDied) return;
 	curDown[curEvent.key.keysym.sym] = false;
 }
 
@@ -48,13 +48,18 @@ void character::renderCharacter(SDL_Event event)
 	DestR.h = 75;
 
 
-	SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	if (!hasDied)
+		SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
 static void renderCharacters(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
 	self->renderCharacter(event);
+}
+
+float lerp(float start, float end, float amnt) {
+	return start + amnt * (end - start);
 }
 
 void character::Update(SDL_Event event)
@@ -72,23 +77,23 @@ void character::Update(SDL_Event event)
 			return;
 		}
 
+		if (jumpForce <= 0.0f)
+			jumping = false;
+
 		tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
 		
 		character* self = static_cast<character*>(this);
 
 		if (!collisionCache[curPosX][curPosY] || collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile) )
 		{
-			DestR.y -= JUMP_FORCE * *(float*)event.user.data1;
+			DestR.y = lerp(DestR.y, DestR.y - round(JUMP_FORCE * *(float*)event.user.data1), 0.75f);
 		}
 
-		jumpForce -= JUMP_FORCE_DECREMENT * *(float*)event.user.data1;
-
-		if (jumpForce <= 0.0f)
-			jumping = false;
+		jumpForce = lerp(jumpForce, jumpForce - round(JUMP_FORCE_DECREMENT * *(float*)event.user.data1), 0.75f);
 
 	}
 	else {
-		addGravity(event, (int)event.user.data1);
+		addGravity(event, *(float*)event.user.data1);
 	}
 
 	
@@ -105,7 +110,7 @@ void character::Update(SDL_Event event)
 
 			if (curTileLeft == nullptr || curTileLeft != nullptr && !collisions::Instance()->Box(self, curTileLeft))
 			{
-				DestR.x--;
+				DestR.x -= round(50 * *(float*)event.user.data1);
 				curFacing = LEFT;
 			}
 
@@ -127,7 +132,7 @@ void character::Update(SDL_Event event)
 
 			if (curTileRight == nullptr || curTileRight != nullptr && !collisions::Instance()->Box(self, curTileRight))
 			{
-				DestR.x++;
+				DestR.x += round(50 * *(float*)event.user.data1);
 				curFacing = RIGHT;
 			}
 
@@ -171,6 +176,7 @@ void character::addGravity(SDL_Event event, float deltaTime)
 
 	character* self = static_cast<character*>(this);
 
+	canJump = false;
 	if (DestR.y < (SCREEN_HEIGHT - 60))
 	{
 		if (curTileUnder != nullptr && collisions::Instance()->Box(self, curTileUnder))
@@ -179,8 +185,8 @@ void character::addGravity(SDL_Event event, float deltaTime)
 			return;
 		}
 
-		DestR.y += (200.0f * *(float*)event.user.data1);
-		canJump = false;
+
+		DestR.y = lerp(DestR.y, DestR.y + round(200.0f * deltaTime), 0.95f);;
 	}
 	else
 	{

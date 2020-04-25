@@ -12,8 +12,8 @@
 
 	#include <utility>
 
-	#define JUMP_FORCE 200
-	#define JUMP_FORCE_DECREMENT 400
+	#define JUMP_FORCE 150
+	#define JUMP_FORCE_DECREMENT 200
 
 	class character {
 
@@ -34,8 +34,8 @@
 			pair<int, int> getTilePos();
 			pair<int, int> getTilePos(int x, int y);
 
-			bool canMove;
 			bool ignoreInput;
+			bool hasDied = false;
 
 		private:
 

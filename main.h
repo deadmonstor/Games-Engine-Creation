@@ -64,6 +64,7 @@
 
 			map<int, vector<void (*)(SDL_Event event)>> hookFunction;
 			map<int, vector<void (*)(SDL_Event event, void * this_pointer)>> hookFunctionCharacter;
+			map<int, vector<void (*)(SDL_Event event, void * this_pointer)>> hookFunctionEnemies;
 
 			bool shouldQuit = false;
 			TTF_Font* Sans;

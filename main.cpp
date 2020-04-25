@@ -8,20 +8,6 @@
 texture2D* texture;
 screenManager* gameScreenManager;
 
-bool test[1000][1000];
-static void uwuwuwu(SDL_Event curEvent)
-{
-	int x = curEvent.button.x / 32;
-	int y = curEvent.button.y / 32;
-
-	if (curEvent.button.button == SDL_BUTTON_LEFT && !test[x][y]) 
-	{
-		test[x][y] = true;
-		std::cout << "|" << x << "," << y << "|tile.png|1" << endl;
-	}
-
-}
-
 int main(int argc, char* args[])
 {
 	gameBase* game = gameBase::Instance();
@@ -36,8 +22,6 @@ int main(int argc, char* args[])
 	float deltaTime = 0;
 
 	game->SDLInit();
-
-	game->hookFunction[SDL_MOUSEBUTTONDOWN].push_back(&uwuwuwu);
 
 	gameScreenManager = screenManager::Instance();
 
@@ -57,6 +41,8 @@ int main(int argc, char* args[])
 		SDL_Event e;
 		SDL_PollEvent(&e);
 
+
+		cout << deltaTime << endl;
 		game->shouldQuit = game->Update(e, deltaTime);
 
 	}
@@ -93,6 +79,24 @@ void gameBase::PushEvent(int id)
 
 		delete a;
 	}
+
+	maxSize = hookFunctionEnemies[id].size();
+
+	for (int i = 0; i < maxSize; i++)
+	{
+		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionEnemies[id];
+
+		SDL_Event* a = new SDL_Event;
+		a->type = id;
+
+		for (enemy* enemys : screenManager::Instance()->enemyTable)
+		{
+			vectorArray.at(i)(*a, enemys);
+		}
+
+		delete a;
+	}
+
 }
 
 void gameBase::PushEvent(int id, SDL_Event event)
@@ -112,6 +116,18 @@ void gameBase::PushEvent(int id, SDL_Event event)
 	{
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
 		vectorArray.at(i)(event, gameScreenManager->LocalPlayer);
+	}
+
+	maxSize = hookFunctionEnemies[id].size();
+
+	for (int i = 0; i < maxSize; i++)
+	{
+		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionEnemies[id];
+
+		for (enemy* enemys : screenManager::Instance()->enemyTable)
+		{
+			vectorArray.at(i)(event, enemys);
+		}
 	}
 }
 

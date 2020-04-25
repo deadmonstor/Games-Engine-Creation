@@ -20,23 +20,32 @@ highscores::highscores()
 	sortScores();
 }
 
+int oldsaveCurScore = 0;
+
 void highscores::render()
 {
 
 	if (screenManager::Instance()->curScreen == SCREENS::SCREEN_MENU) return;
 
-	if (!surfaceMessage)
+	if (!surfaceMessage || curScore != oldsaveCurScore)
 	{
-		curScoreString = "Score: " + to_string(curScore);
+		if (surfaceMessage)
+			SDL_FreeSurface(surfaceMessage);
 
-		surfaceMessage = TTF_RenderText_Solid(gameBase::Instance()->Sans, curScoreString.c_str(), { 0,0,0 });
+		if (Message)
+			SDL_DestroyTexture(Message);
+
+		curScoreString = "Score: " + to_string(curScore);
+		oldsaveCurScore = curScore;
+
+		surfaceMessage = TTF_RenderText_Solid(gameBase::Instance()->Sans, curScoreString.c_str(), { 255,255,255 });
 
 		Message = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage);
 
-		Message_rect.x = 0;
-		Message_rect.y = -20;
+		Message_rect.x = 5;
+		Message_rect.y = 5;
 		Message_rect.w = 140;
-		Message_rect.h = 80;
+		Message_rect.h = 60;
 	}
 
     SDL_RenderCopy(gameBase::Instance()->gRenderer, Message, NULL, &Message_rect);
