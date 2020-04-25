@@ -52,6 +52,13 @@ bool collisions::Circle(enemy* character1, tile* tile)
 	return circleInternal(character1Pos, tilePos);
 }
 
+bool collisions::Circle(enemy* character1, enemy* character2)
+{
+	SDL_Rect character1Pos = character1->getRenderBox();
+	SDL_Rect character2Pos = character2->getRenderBox();
+
+	return circleInternal(character1Pos, character2Pos);
+}
 
 bool boxInternal(SDL_Rect character1Pos, SDL_Rect character2Pos)
 {
@@ -91,6 +98,14 @@ bool collisions::Box(enemy* character1, tile* tile)
 	SDL_Rect tilePos = tile->getCollisionBox();
 
 	return boxInternal(character1Pos, tilePos);
+}
+
+bool collisions::Box(character* character1, powblock* curPowBlock)
+{
+	SDL_Rect character1Pos = character1->getRenderBox();
+	SDL_Rect powBlockPos = curPowBlock->getRenderBox();
+
+	return boxInternal(character1Pos, powBlockPos);
 }
 
 collisions::~collisions()

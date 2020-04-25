@@ -26,9 +26,13 @@
 		SDL_Rect DestRs;
 		FACING curFacing = FACING::RIGHT;
 		bool canMove;
+		bool isDistrupted = false;
+		bool moveDistrupted = false;
+
+		Uint32 lastChange = 0;
 
 	public:
-		enemy();
+		enemy(int x, int y);
 		~enemy();
 
 		SDL_Rect getPosition();
@@ -38,6 +42,15 @@
 		void addGravity(SDL_Event _, float deltaTime);
 		pair<int, int> getTilePos();
 		pair<int, int> getTilePos(int x, int y);
+		bool getCanMove();
+
+		void setDistrupted(bool);
+		bool getDistrupted();
+		void setMoveDistrupted(bool);
+		bool getMoveDistrupted();
+		void setDirection(FACING direction);
+		Uint32 getLastChange();
+
 	};
 
 #endif // !ENEMY_H

@@ -24,6 +24,7 @@
     <ClCompile Include="highscores.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="powblock.cpp" />
     <ClCompile Include="screenmanager.cpp" />
     <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="highscores.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="powblock.h" />
     <ClInclude Include="screenmanager.h" />
     <ClInclude Include="soundManager.h" />
     <ClInclude Include="texture.h" />

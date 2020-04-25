@@ -3,7 +3,12 @@
 
 void enemy::render(SDL_Event _)
 {
-	SDL_RenderCopyEx(gameBase::Instance()->gRenderer, curTexture, &imgPartRects, &DestRs, NULL, NULL, curFacing == FACING::RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	SDL_RendererFlip curFlip = (curFacing == RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+
+	if (isDistrupted)
+		curFlip = static_cast<SDL_RendererFlip>(static_cast<int>(curFlip) | static_cast<int>(SDL_FLIP_VERTICAL));
+
+	SDL_RenderCopyEx(gameBase::Instance()->gRenderer, curTexture, &imgPartRects, &DestRs, NULL, NULL, curFlip);
 }
 
 static void renderEnemy(SDL_Event event, void* this_pointer)
@@ -35,10 +40,13 @@ void enemy::update(SDL_Event curEvent)
 
 	float deltaTime = *(float *)curEvent.user.data1;
 
-	if (canMove && (curTile != nullptr && !collisions::Instance()->Box(self, curTile) || canMove && curTile == nullptr))
+	bool canMoveProperly = (canMove && (!isDistrupted && !moveDistrupted || isDistrupted && moveDistrupted));
+
+	if (canMoveProperly && (curTile != nullptr && !collisions::Instance()->Box(self, curTile)
+		|| canMoveProperly && curTile == nullptr))
 	{
 
-		float dist = round(50 * deltaTime);
+		float dist = round((moveDistrupted ? 250 : 100) * deltaTime);
 		if (curFacing == FACING::RIGHT)
 		{
 			DestRs.x = round(DestRs.x + dist);
@@ -49,7 +57,7 @@ void enemy::update(SDL_Event curEvent)
 		}
 
 	}
-	else if(canMove)
+	else if(canMoveProperly)
 	{
 		curFacing = (curFacing == FACING::LEFT ? FACING::RIGHT : FACING::LEFT);
 	}
@@ -77,7 +85,7 @@ void enemy::addGravity(SDL_Event event, float deltaTime)
 			return;
 		}
 
-		DestRs.y += (200.0f * *(float*)event.user.data1);
+		DestRs.y += round(300.0f * *(float*)event.user.data1);
 	}
 	else 
 	{
@@ -99,22 +107,92 @@ pair<int, int> enemy::getTilePos(int x, int y)
 	return make_pair(curPosX, curPosY);
 }
 
-enemy::enemy()
+enemy::enemy(int x, int y)
 {
 	imgPartRects.x = 96;
 	imgPartRects.y = 8;
 	imgPartRects.w = 15;
 	imgPartRects.h = 23;
 
-	DestRs.x = 100;
-	DestRs.y = 0;
+	DestRs.x = x;
+	DestRs.y = y;
 	DestRs.w = 15 * 2;
 	DestRs.h = 23 * 2;
 
+	gameBase::Instance()->hookFunctionEnemies.clear();
+
 	gameBase::Instance()->hookFunctionEnemies[RENDERUPDATE].push_back(&renderEnemy);
-	gameBase::Instance()->hookFunctionEnemies[POSTTICK].push_back(&updateEnemy);
+	gameBase::Instance()->hookFunctionEnemies[PRETICK].push_back(&updateEnemy);
 
 	curTexture = texture2D::Instance()->LoadTextureFromFile("Images/enemies.png");
+}
+
+bool enemy::getDistrupted()
+{
+	return isDistrupted;
+}
+
+void enemy::setDistrupted(bool _isDistrupted)
+{
+
+	if (_isDistrupted)
+	{
+		imgPartRects.x = 175;
+		imgPartRects.y = 17;
+		imgPartRects.w = 16;
+		imgPartRects.h = 24;
+	}
+	else 
+	{
+		imgPartRects.x = 96;
+		imgPartRects.y = 8;
+		imgPartRects.w = 15;
+		imgPartRects.h = 24;
+	}
+
+	isDistrupted = _isDistrupted;
+}
+
+bool enemy::getMoveDistrupted()
+{
+	return moveDistrupted;
+}
+
+void enemy::setMoveDistrupted(bool _isDistrupted)
+{
+
+	if (_isDistrupted)
+	{
+		imgPartRects.x = 160; // 160 - 175
+		imgPartRects.y = 17;  // 9 - 33
+		imgPartRects.w = 15;
+		imgPartRects.h = 24;
+	}
+	else
+	{
+		imgPartRects.x = 176; // 176 - 191
+		imgPartRects.y = 17;  // 9 - 33
+		imgPartRects.w = 15;
+		imgPartRects.h = 24;
+	}
+
+	lastChange = SDL_GetTicks();
+	moveDistrupted = _isDistrupted;
+}
+
+void enemy::setDirection(FACING _curDirection)
+{
+	curFacing = _curDirection;
+}
+
+Uint32 enemy::getLastChange()
+{
+	return lastChange;
+}
+
+bool enemy::getCanMove()
+{
+	return canMove;
 }
 
 SDL_Rect enemy::getPosition()

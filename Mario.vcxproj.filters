@@ -33,6 +33,9 @@
     <Filter Include="Source Files\highscores">
       <UniqueIdentifier>{882478c6-0a7f-49d9-8585-b35056a82619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\powblock">
+      <UniqueIdentifier>{1221e3e7-153d-4a39-bb9c-e1aa83d1e489}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="highscores.cpp">
       <Filter>Source Files\highscores</Filter>
+    </ClCompile>
+    <ClCompile Include="powblock.cpp">
+      <Filter>Source Files\powblock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="highscores.h">
       <Filter>Source Files\highscores</Filter>
+    </ClInclude>
+    <ClInclude Include="powblock.h">
+      <Filter>Source Files\powblock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

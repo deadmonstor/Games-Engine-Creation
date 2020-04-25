@@ -7,7 +7,6 @@
 
 texture2D* texture;
 screenManager* gameScreenManager;
-
 int main(int argc, char* args[])
 {
 	gameBase* game = gameBase::Instance();
@@ -27,11 +26,12 @@ int main(int argc, char* args[])
 
 	while (!game->shouldQuit)
 	{
+
 		deltaTime = (SDL_GetTicks() - tickCount) / 1000.0f;
 
-		if (deltaTime > 0.05f)
+		if (deltaTime > 0.5f)
 		{
-			deltaTime = 0.05f;
+			deltaTime = 0.5f;
 		}
 
 		tickCount = SDL_GetTicks();
@@ -42,7 +42,6 @@ int main(int argc, char* args[])
 		SDL_PollEvent(&e);
 
 
-		cout << deltaTime << endl;
 		game->shouldQuit = game->Update(e, deltaTime);
 
 	}
@@ -117,6 +116,7 @@ void gameBase::PushEvent(int id, SDL_Event event)
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
 		vectorArray.at(i)(event, gameScreenManager->LocalPlayer);
 	}
+
 
 	maxSize = hookFunctionEnemies[id].size();
 

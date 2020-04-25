@@ -7,9 +7,14 @@
 #include "enemy.h"
 #include "collisions.h"
 #include "highscores.h"
+#include "powblock.h"
 
 #ifndef _SCREENMANAGER_H
 	#define _SCREENMANAGER_H
+
+	class powblock;
+	class enemy;
+	class character;
 
 	class screenManager {
 
@@ -27,6 +32,7 @@
 			SCREENS curScreen = SCREEN_MENU;
 
 			vector< enemy* > enemyTable;
+			vector< powblock* > powTable;
 
 
 		private:
@@ -37,7 +43,8 @@
 			static screenManager* mInstance;
 
 			
-			void updateScreenOne();
+			void updateEnemyCollision();
+			void updatePowBlockCollision();
 
 
 			void renderMenuScreen();

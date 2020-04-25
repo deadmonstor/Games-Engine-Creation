@@ -110,7 +110,7 @@ void character::Update(SDL_Event event)
 
 			if (curTileLeft == nullptr || curTileLeft != nullptr && !collisions::Instance()->Box(self, curTileLeft))
 			{
-				DestR.x -= round(50 * *(float*)event.user.data1);
+				DestR.x -= round(150 * *(float*)event.user.data1);
 				curFacing = LEFT;
 			}
 
@@ -132,7 +132,7 @@ void character::Update(SDL_Event event)
 
 			if (curTileRight == nullptr || curTileRight != nullptr && !collisions::Instance()->Box(self, curTileRight))
 			{
-				DestR.x += round(50 * *(float*)event.user.data1);
+				DestR.x += round(150 * *(float*)event.user.data1);
 				curFacing = RIGHT;
 			}
 
@@ -144,6 +144,11 @@ void character::Update(SDL_Event event)
 	if (curDown[SDLK_SPACE])
 		Jump();
 
+}
+
+void character::cancelJump()
+{
+	jumping = false;
 }
 
 static void updateCharacter(SDL_Event event, void* this_pointer)
@@ -186,7 +191,7 @@ void character::addGravity(SDL_Event event, float deltaTime)
 		}
 
 
-		DestR.y = lerp(DestR.y, DestR.y + round(200.0f * deltaTime), 0.95f);;
+		DestR.y = lerp(DestR.y, DestR.y + round(300.0f * deltaTime), 0.95f);;
 	}
 	else
 	{
@@ -197,6 +202,8 @@ void character::addGravity(SDL_Event event, float deltaTime)
 character::character(gameBase* gameBases, texture2D* texture)
 {
 	game = gameBases;
+
+	game->hookFunctionCharacter.clear();
 
 	game->hookFunctionCharacter[SDL_KEYDOWN].push_back(&keyDowns);
 	game->hookFunctionCharacter[SDL_KEYUP].push_back(&keyUps);

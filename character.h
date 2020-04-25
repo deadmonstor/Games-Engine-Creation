@@ -12,8 +12,8 @@
 
 	#include <utility>
 
-	#define JUMP_FORCE 150
-	#define JUMP_FORCE_DECREMENT 200
+	#define JUMP_FORCE 750
+	#define JUMP_FORCE_DECREMENT 6000
 
 	class character {
 
@@ -33,6 +33,7 @@
 			void checkCollisions();
 			pair<int, int> getTilePos();
 			pair<int, int> getTilePos(int x, int y);
+			void cancelJump();
 
 			bool ignoreInput;
 			bool hasDied = false;

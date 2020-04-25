@@ -50,23 +50,34 @@ void screenManager::setupLevel(SCREENS screen)
 
 	// Delete all actors in level
 	delete LocalPlayer;
-	for (enemy* curEnemy : enemyTable) {
-
+	for (enemy* curEnemy : enemyTable) 
+	{
 		enemyTable.erase(std::remove(enemyTable.begin(), enemyTable.end(), curEnemy), enemyTable.end());
 		delete curEnemy;
-
 	}
+
+	enemyTable.clear();
+	enemyTable.resize(0);
+
+	for (powblock* curPowBlock : powTable)
+	{
+		powTable.erase(std::remove(powTable.begin(), powTable.end(), curPowBlock), powTable.end());
+		delete curPowBlock;
+	}
+
+	powTable.clear();
+	powTable.resize(0);
+
 
 	tiles::Instance()->wipeTiles();
 
 	//Setup new actors
 	LocalPlayer = new character(game, texture);
-	enemyTable.push_back(new enemy());
+	enemyTable.push_back(new enemy(4 * 32, 1 * 32));
+	enemyTable.push_back(new enemy(3 * 32, 1 * 32));
+	powTable.push_back(new powblock(12 * 32, 11 * 32));
 
 	tiles::Instance()->loadFromFile(mapArray[(int)screen]);
-
-	// Set position of actors
-	// TODO
 
 	LocalPlayer->ignoreInput = false;
 
@@ -99,6 +110,11 @@ void screenManager::setupLevel(SCREENS screen)
 
 void screenManager::render()
 {
+	for (powblock* powBlocks : powTable)
+	{
+		if (powBlocks == nullptr) continue;
+		powBlocks->render();
+	}
 
 	switch (curScreen) {
 
@@ -170,32 +186,34 @@ void screenManager::renderMenuScreen()
 
 void screenManager::update()
 {
-	switch (curScreen) {
-
-		case SCREENS::SCREEN_LEVEL1:
-		{
-			updateScreenOne();
-			break;
-		}
-
-	}
-
+	updateEnemyCollision();
+	updatePowBlockCollision();
 }
 
-void screenManager::updateScreenOne()
+void screenManager::updateEnemyCollision()
 {
 	int curPosXLocalPlayer = get<0>(LocalPlayer->getTilePos()), curPosYLocalPlayer = get<1>(LocalPlayer->getTilePos());
+	SDL_Rect curPosition = LocalPlayer->getPosition();
 	for (enemy* enemys : enemyTable) 
 	{
 		
+		bool canMoveProperly = (enemys->getCanMove() && (!enemys->getDistrupted() && !enemys->getMoveDistrupted() 
+								|| enemys->getDistrupted() && enemys->getMoveDistrupted()));
+
 		int curPosXEnemy = get<0>(enemys->getTilePos()), curPosYEnemy = get<1>(enemys->getTilePos());
-		if (collisions::Instance()->Box(LocalPlayer, enemys) && !(curPosYLocalPlayer < curPosYEnemy))
+		SDL_Rect curEnemyPosition = enemys->getPosition();
+
+
+		if (canMoveProperly && (enemys->getLastChange() < SDL_GetTicks() - 1000) && collisions::Instance()->Box(LocalPlayer, enemys) && !(curPosYLocalPlayer < curPosYEnemy))
 		{
+			// Jumped into enemy while not distrupted == DEATH
 			LocalPlayer->hasDied = true;
 			break;
 		}
-		else if (collisions::Instance()->Circle(LocalPlayer, enemys) && !LocalPlayer->hasDied)
+		else if (collisions::Instance()->Circle(LocalPlayer, enemys) && !LocalPlayer->hasDied && (curPosYLocalPlayer < curPosYEnemy))
 		{
+			// Jumped ontop of enemy == Destroy
+
 			std::vector<enemy*>::iterator position = std::find(enemyTable.begin(), enemyTable.end(), enemys);
 			if (position != enemyTable.end())
 				enemyTable.erase(position);
@@ -203,6 +221,48 @@ void screenManager::updateScreenOne()
 			highscores::Instance()->curScore++;
 
 			delete enemys;
+		}
+		else if ((enemys->getDistrupted() && !enemys->getMoveDistrupted()) && collisions::Instance()->Circle(LocalPlayer, enemys) && !LocalPlayer->hasDied)
+		{
+			// Jumped into enemy while distrupted == spin object away
+			enemys->setMoveDistrupted(true);
+			enemys->setDirection((curPosition.x > curEnemyPosition.x ? FACING::LEFT : FACING::RIGHT));
+		}
+		else if ((enemys->getDistrupted() && enemys->getMoveDistrupted()))
+		{
+			// Scan through all "enemies" to see if it hits the other one
+			for (enemy* secondEnemy : enemyTable)
+			{
+				// If it hits the enemy and isn't the first enemy. ABORT DEATH
+				if (secondEnemy != enemys && collisions::Instance()->Circle(enemys, secondEnemy))
+				{
+					std::vector<enemy*>::iterator position = std::find(enemyTable.begin(), enemyTable.end(), secondEnemy);
+					if (position != enemyTable.end())
+						enemyTable.erase(position);
+
+					highscores::Instance()->curScore++;
+
+					delete secondEnemy;
+				}
+
+			}
+		}
+
+	}
+}
+
+void screenManager::updatePowBlockCollision()
+{
+
+	SDL_Rect curPosition = LocalPlayer->getPosition();
+	for (powblock* curPowBlock : powTable)
+	{
+		SDL_Rect curPowBlockPosition = curPowBlock->getPosition();
+
+		if (collisions::Instance()->Box(LocalPlayer, curPowBlock) && !LocalPlayer->hasDied && curPosition.y > curPowBlockPosition.y)
+		{
+			curPowBlock->onHit();
+			LocalPlayer->cancelJump();
 		}
 
 	}
