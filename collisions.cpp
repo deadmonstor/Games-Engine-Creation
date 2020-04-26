@@ -65,7 +65,7 @@ bool boxInternal(SDL_Rect character1Pos, SDL_Rect character2Pos)
 	return (character1Pos.x < character2Pos.x + character2Pos.w &&
 		character1Pos.x + character1Pos.w > character2Pos.x &&
 		character1Pos.y < character2Pos.y + character2Pos.h &&
-		character1Pos.y + character1Pos.w > character2Pos.y);
+		character1Pos.y + character1Pos.h > character2Pos.y);
 }
 
 bool collisions::Box(character* character1, character* character2)
@@ -106,6 +106,14 @@ bool collisions::Box(character* character1, powblock* curPowBlock)
 	SDL_Rect powBlockPos = curPowBlock->getRenderBox();
 
 	return boxInternal(character1Pos, powBlockPos);
+}
+
+bool collisions::Box(character* character1, flagpole* curFlagPole)
+{
+	SDL_Rect character1Pos = character1->getRenderBox();
+	SDL_Rect flagPolePos = curFlagPole->getRenderBox();
+
+	return boxInternal(character1Pos, flagPolePos);
 }
 
 collisions::~collisions()

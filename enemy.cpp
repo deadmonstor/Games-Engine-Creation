@@ -206,7 +206,7 @@ SDL_Rect enemy::getRenderBox()
 
 	returnValue.x = DestRs.x;
 	returnValue.y = DestRs.y;
-	returnValue.w = DestRs.w * 1.5;
+	returnValue.w = DestRs.w;
 	returnValue.h = DestRs.h;
 
 	return returnValue;

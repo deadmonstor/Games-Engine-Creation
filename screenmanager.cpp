@@ -68,6 +68,15 @@ void screenManager::setupLevel(SCREENS screen)
 	powTable.clear();
 	powTable.resize(0);
 
+	for (flagpole* curFlagPole : flagPoleTable)
+	{
+		flagPoleTable.erase(std::remove(flagPoleTable.begin(), flagPoleTable.end(), curFlagPole), flagPoleTable.end());
+		delete curFlagPole;
+	}
+
+	flagPoleTable.clear();
+	flagPoleTable.resize(0);
+
 
 	tiles::Instance()->wipeTiles();
 
@@ -76,6 +85,7 @@ void screenManager::setupLevel(SCREENS screen)
 	enemyTable.push_back(new enemy(4 * 32, 1 * 32));
 	enemyTable.push_back(new enemy(3 * 32, 1 * 32));
 	powTable.push_back(new powblock(12 * 32, 11 * 32));
+	flagPoleTable.push_back(new flagpole(35 * 32, 8 * 32));
 
 	tiles::Instance()->loadFromFile(mapArray[(int)screen]);
 
@@ -114,6 +124,12 @@ void screenManager::render()
 	{
 		if (powBlocks == nullptr) continue;
 		powBlocks->render();
+	}
+
+	for (flagpole* flagPole : flagPoleTable)
+	{
+		if (flagPole == nullptr) continue;
+		flagPole->render();
 	}
 
 	switch (curScreen) {
@@ -188,6 +204,7 @@ void screenManager::update()
 {
 	updateEnemyCollision();
 	updatePowBlockCollision();
+	updateFlagPoleCollision();
 }
 
 void screenManager::updateEnemyCollision()
@@ -263,6 +280,38 @@ void screenManager::updatePowBlockCollision()
 		{
 			curPowBlock->onHit();
 			LocalPlayer->cancelJump();
+		}
+
+	}
+
+}
+
+void screenManager::updateFlagPoleCollision()
+{
+
+	for (flagpole* curFlagPole : flagPoleTable)
+	{
+
+		bool test = collisions::Instance()->Box(LocalPlayer, curFlagPole) || LocalPlayer->stopGravity;
+		if (test && !LocalPlayer->hasDied)
+		{
+			LocalPlayer->cancelJump();
+			LocalPlayer->clearInput();
+			LocalPlayer->ignoreInput = true;
+			LocalPlayer->stopGravity = true;
+
+			SDL_Rect dest = LocalPlayer->getPosition();
+			dest.x = curFlagPole->getRenderBox().x;
+			dest.y++;
+
+			LocalPlayer->setPosition(dest);
+
+			if (dest.y > (curFlagPole->getRenderBox().y + (32 * 7 / 2)))
+			{
+				setupLevel(SCREENS::SCREEN_LEVEL2);
+			}
+
+			
 		}
 
 	}

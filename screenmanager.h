@@ -8,6 +8,7 @@
 #include "collisions.h"
 #include "highscores.h"
 #include "powblock.h"
+#include "flagpole.h"
 
 #ifndef _SCREENMANAGER_H
 	#define _SCREENMANAGER_H
@@ -33,6 +34,7 @@
 
 			vector< enemy* > enemyTable;
 			vector< powblock* > powTable;
+			vector< flagpole* > flagPoleTable;
 
 
 		private:
@@ -45,7 +47,7 @@
 			
 			void updateEnemyCollision();
 			void updatePowBlockCollision();
-
+			void updateFlagPoleCollision();
 
 			void renderMenuScreen();
 			string curString [2];

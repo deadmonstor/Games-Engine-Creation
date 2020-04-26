@@ -31,6 +31,11 @@ void character::keyUp(SDL_Event curEvent)
 	curDown[curEvent.key.keysym.sym] = false;
 }
 
+void character::clearInput()
+{
+	curDown.clear();
+}
+
 static void keyUps(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
@@ -46,7 +51,6 @@ void character::renderCharacter(SDL_Event event)
 
 	DestR.w = 40;
 	DestR.h = 75;
-
 
 	if (!hasDied)
 		SDL_RenderCopyEx(game->gRenderer, curTexture, &imgPartRect, &DestR, NULL, NULL, curFacing == FACING::RIGHT ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
@@ -93,7 +97,8 @@ void character::Update(SDL_Event event)
 
 	}
 	else {
-		addGravity(event, *(float*)event.user.data1);
+		if (!stopGravity)
+			addGravity(event, *(float*)event.user.data1);
 	}
 
 	
@@ -229,12 +234,17 @@ SDL_Rect character::getPosition()
 	return DestR;
 }
 
+void character::setPosition(SDL_Rect overrides)
+{
+	DestR = overrides;
+}
+
 SDL_Rect character::getRenderBox()
 {
 	SDL_Rect returnValue;
 	returnValue.x = DestR.x;
 	returnValue.y = DestR.y;
-	returnValue.w = DestR.w * 1.5;
+	returnValue.w = DestR.w;
 	returnValue.h = DestR.h;
 
 	return returnValue;

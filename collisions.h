@@ -7,11 +7,13 @@
 	#include "character.h"
 	#include "enemy.h"
 	#include "powblock.h"
+	#include "flagpole.h"
 
 	class character;
 	class enemy;
 	class tile;
 	class powblock;
+	class flagpole;
 
 	class collisions
 	{
@@ -28,6 +30,7 @@
 			bool Box(character* chracter1, tile* tile);
 			bool Box(enemy* chracter1, tile* tile);
 			bool Box(character* character1, powblock* curPowBlock);
+			bool Box(character* character1, flagpole* curFlagPole);
 
 		private:
 			static collisions* mInstance;

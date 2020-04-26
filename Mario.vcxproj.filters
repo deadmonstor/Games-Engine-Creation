@@ -36,6 +36,9 @@
     <Filter Include="Source Files\powblock">
       <UniqueIdentifier>{1221e3e7-153d-4a39-bb9c-e1aa83d1e489}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\flagpole">
+      <UniqueIdentifier>{2585a30d-adbb-4592-84be-bf2b6d7af9d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="powblock.cpp">
       <Filter>Source Files\powblock</Filter>
+    </ClCompile>
+    <ClCompile Include="flagpole.cpp">
+      <Filter>Source Files\flagpole</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="powblock.h">
       <Filter>Source Files\powblock</Filter>
+    </ClInclude>
+    <ClInclude Include="flagpole.h">
+      <Filter>Source Files\flagpole</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="collisions.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="flagpole.cpp" />
     <ClCompile Include="highscores.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="character.cpp" />
@@ -40,6 +41,7 @@
   <ItemGroup>
     <ClInclude Include="collisions.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="flagpole.h" />
     <ClInclude Include="highscores.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="character.h" />

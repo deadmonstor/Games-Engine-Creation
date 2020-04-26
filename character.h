@@ -22,6 +22,7 @@
 			~character();
 
 			SDL_Rect getPosition();
+			void setPosition(SDL_Rect overrides);
 			SDL_Rect getRenderBox();
 
 			void renderCharacter(SDL_Event event);
@@ -34,9 +35,11 @@
 			pair<int, int> getTilePos();
 			pair<int, int> getTilePos(int x, int y);
 			void cancelJump();
+			void clearInput();
 
 			bool ignoreInput;
 			bool hasDied = false;
+			bool stopGravity = false;
 
 		private:
 
