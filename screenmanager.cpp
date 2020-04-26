@@ -10,6 +10,19 @@ static void keyDown(SDL_Event curEvent)
 	{
 		curInstance->setupLevel(SCREENS::SCREEN_LEVEL1);
 	}
+
+	if (curInstance->curScreen == SCREENS::SCREEN_LEVELCHANGE &&
+		curEvent.key.keysym.sym == SDLK_SPACE)
+	{
+		curInstance->setupLevel(SCREENS::SCREEN_LEVEL2);
+	}
+
+	if (curInstance->curScreen == SCREENS::SCREEN_GAMEOVER &&
+		curEvent.key.keysym.sym == SDLK_SPACE)
+	{
+		curInstance->setupLevel(SCREENS::SCREEN_LEVEL1);
+		highscores::Instance()->curScore = 0;
+	}
 }
 
 screenManager::screenManager() {
@@ -32,11 +45,15 @@ screenManager* screenManager::Instance()
 	return mInstance;
 }
 
-string mapArray[3] =
+string mapArray[7] =
 {
 	"mapOne",
 	"mapOne",
-	"mapTwo"
+	"mapTwo",
+	"",
+	"",
+	"",
+	""
 };
 
 void screenManager::setupLevel(SCREENS screen)
@@ -50,6 +67,7 @@ void screenManager::setupLevel(SCREENS screen)
 
 	// Delete all actors in level
 	delete LocalPlayer;
+	LocalPlayer = nullptr;
 	for (enemy* curEnemy : enemyTable) 
 	{
 		enemyTable.erase(std::remove(enemyTable.begin(), enemyTable.end(), curEnemy), enemyTable.end());
@@ -57,7 +75,6 @@ void screenManager::setupLevel(SCREENS screen)
 	}
 
 	enemyTable.clear();
-	enemyTable.resize(0);
 
 	for (powblock* curPowBlock : powTable)
 	{
@@ -66,7 +83,6 @@ void screenManager::setupLevel(SCREENS screen)
 	}
 
 	powTable.clear();
-	powTable.resize(0);
 
 	for (flagpole* curFlagPole : flagPoleTable)
 	{
@@ -75,21 +91,35 @@ void screenManager::setupLevel(SCREENS screen)
 	}
 
 	flagPoleTable.clear();
-	flagPoleTable.resize(0);
 
+	memset(surfaceMessage, 0, sizeof surfaceMessage);
+	memset(Message, 0, sizeof Message);
+	memset(Message_rect, 0, sizeof Message_rect);
+	memset(colors, 0, sizeof colors);
 
 	tiles::Instance()->wipeTiles();
 
 	//Setup new actors
-	LocalPlayer = new character(game, texture);
-	enemyTable.push_back(new enemy(4 * 32, 1 * 32));
-	enemyTable.push_back(new enemy(3 * 32, 1 * 32));
-	powTable.push_back(new powblock(12 * 32, 11 * 32));
-	flagPoleTable.push_back(new flagpole(35 * 32, 8 * 32));
+	if (screen != SCREEN_LEVELCHANGE && screen != SCREEN_GAMEOVER)
+	{
+		LocalPlayer = new character(game, texture);
+		enemyTable.push_back(new enemy(4 * 32, 1 * 32));
+		enemyTable.push_back(new enemy(3 * 32, 1 * 32));
+		powTable.push_back(new powblock(12 * 32, 11 * 32));
+		flagPoleTable.push_back(new flagpole(32 * 32, 8 * 32));
+	}
+	else if(screen != SCREEN_GAMEOVER)
+	{
+		highscores::Instance()->addScore(to_string(curScreen), highscores::Instance()->curScore);
+		highscores::Instance()->rememberScore = highscores::Instance()->curScore;
+		highscores::Instance()->rememberLevel = curScreen;
+		highscores::Instance()->curScore = 0;
+	}
 
 	tiles::Instance()->loadFromFile(mapArray[(int)screen]);
 
-	LocalPlayer->ignoreInput = false;
+	if (LocalPlayer != nullptr)
+		LocalPlayer->ignoreInput = false;
 
 	switch (screen)
 	{
@@ -106,7 +136,7 @@ void screenManager::setupLevel(SCREENS screen)
 			soundManager::Instance()->playSound(0, -1);
 			break;
 		}
-
+		
 	}
 
 	a->type = POSTMAPCHANGE;
@@ -140,6 +170,18 @@ void screenManager::render()
 			break;
 		}
 
+		case SCREENS::SCREEN_LEVELCHANGE:
+		{
+			renderLevelChangeScreen();
+			break;
+		}
+
+		case SCREENS::SCREEN_GAMEOVER:
+		{
+			renderDeathScreen();
+			break;
+		}
+
 	}
 
 }
@@ -154,8 +196,8 @@ void screenManager::initText(int index, int width, int height)
 			Message_rect[index].w = 580;
 			Message_rect[index].h = 140;
 
-			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 0.8);
-			Message_rect[index].x = (SCREEN_WIDTH + width) / 15;
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 0.6);
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 55;
 			break;
 		}
 
@@ -166,11 +208,98 @@ void screenManager::initText(int index, int width, int height)
 			Message_rect[index].w = 580;
 			Message_rect[index].h = 70;
 
-			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1.8);
-			Message_rect[index].x = (SCREEN_WIDTH + width) / 9;
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1.6);
+			Message_rect[index].x = (SCREEN_WIDTH + width) / 16;
+			break;
+		}
+
+		case 2:
+		{
+			curString[index] = "Press Space to continue game";
+			colors[index] = { 255,255,255 };
+			Message_rect[index].w = 580;
+			Message_rect[index].h = 70;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 2.5);
+			Message_rect[index].x = (SCREEN_WIDTH / 4);
+			break;
+		}
+
+		case 3:
+		{
+			curString[index] = "Score: " + to_string(highscores::Instance()->rememberScore);
+			colors[index] = { 255,255,255 };
+			Message_rect[index].w = 280;
+			Message_rect[index].h = 70;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 0.5);
+			Message_rect[index].x = (SCREEN_WIDTH / 2.8);
+			break;
+		}
+
+		case 4:
+		{
+			int highScore = highscores::Instance()->getHighestScoreOfInt(highscores::Instance()->rememberLevel);
+			int myScore = highscores::Instance()->rememberScore;
+
+			if (highScore <= myScore)
+			{
+				curString[index] = "HighScore: " + to_string(myScore);
+				colors[index] = { 255,0,0 };
+			}
+			else 
+			{
+				curString[index] = "HighScore: " + to_string(highScore);
+				colors[index] = { 255,255,255 };
+			}
+
+			Message_rect[index].w = 400;
+			Message_rect[index].h = 70;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1.5);
+			Message_rect[index].x = (SCREEN_WIDTH / 3);
+			break;
+		}
+
+		case 5:
+		{
+			int highScore = highscores::Instance()->getHighestScoreOfInt(highscores::Instance()->rememberLevel);
+			int myScore = highscores::Instance()->rememberScore;
+
+			curString[index] = "You have died.";
+
+			Message_rect[index].w = 400;
+			Message_rect[index].h = 70;
+
+			Message_rect[index].y = ((SCREEN_HEIGHT / 4) * 1);
+			Message_rect[index].x = (SCREEN_WIDTH / 3);
 			break;
 		}
 	}
+}
+
+void screenManager::renderText(int i)
+{
+	if (!surfaceMessage[i])
+	{
+
+		int w = 0, h = 0;
+
+		initText(i, w, h);
+
+		if (TTF_SizeText(gameBase::Instance()->Sans, curString[i].c_str(), &w, &h))
+		{
+			return;
+		}
+
+		initText(i, w, h);
+
+		screenManager::surfaceMessage[i] = TTF_RenderText_Solid(gameBase::Instance()->Sans, curString[i].c_str(), colors[i]);
+
+		Message[i] = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage[i]);
+	}
+
+	SDL_RenderCopy(gameBase::Instance()->gRenderer, Message[i], NULL, &Message_rect[i]);
 }
 
 void screenManager::renderMenuScreen()
@@ -178,33 +307,55 @@ void screenManager::renderMenuScreen()
 
 	for (int i = 0; i < 2; i++)
 	{
-		if (!surfaceMessage[i])
-		{
-
-			int w, h;
-
-			if (TTF_SizeText(gameBase::Instance()->Sans, curString[i].c_str(), &w, &h))
-			{
-				return;
-			}
-
-			initText(i, w, h);
-
-			screenManager::surfaceMessage[i] = TTF_RenderText_Solid(gameBase::Instance()->Sans, curString[i].c_str(), colors[i]);
-
-			Message[i] = SDL_CreateTextureFromSurface(gameBase::Instance()->gRenderer, surfaceMessage[i]);
-		}
-
-		SDL_RenderCopy(gameBase::Instance()->gRenderer, Message[i], NULL, &Message_rect[i]);
+		renderText(i);
 	}
 
 }
 
+void screenManager::renderLevelChangeScreen()
+{
+	SDL_SetRenderDrawColor(gameBase::Instance()->gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gameBase::Instance()->gRenderer);
+
+	for (int i = 2; i < 5; i++)
+	{
+		renderText(i);
+	}
+}
+
+void screenManager::renderDeathScreen()
+{
+	SDL_SetRenderDrawColor(gameBase::Instance()->gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gameBase::Instance()->gRenderer);
+
+	renderText(2);
+	renderText(5);
+}
+
 void screenManager::update()
 {
-	updateEnemyCollision();
-	updatePowBlockCollision();
-	updateFlagPoleCollision();
+	switch (curScreen) 
+	{
+
+		case SCREENS::SCREEN_LEVELCHANGE:
+		{
+			break;
+		}
+
+		case SCREENS::SCREEN_GAMEOVER:
+		{
+			break;
+		}
+
+		default:
+		{
+			updatePowBlockCollision();
+			updateFlagPoleCollision();
+			updateEnemyCollision();
+			break;
+		}
+
+	}
 }
 
 void screenManager::updateEnemyCollision()
@@ -225,6 +376,7 @@ void screenManager::updateEnemyCollision()
 		{
 			// Jumped into enemy while not distrupted == DEATH
 			LocalPlayer->hasDied = true;
+			setupLevel(SCREENS::SCREEN_GAMEOVER);
 			break;
 		}
 		else if (collisions::Instance()->Circle(LocalPlayer, enemys) && !LocalPlayer->hasDied && (curPosYLocalPlayer < curPosYEnemy))
@@ -243,7 +395,7 @@ void screenManager::updateEnemyCollision()
 		{
 			// Jumped into enemy while distrupted == spin object away
 			enemys->setMoveDistrupted(true);
-			enemys->setDirection((curPosition.x > curEnemyPosition.x ? FACING::LEFT : FACING::RIGHT));
+			enemys->setDirection(curPosition.x > curEnemyPosition.x ? FACING::LEFT : FACING::RIGHT);
 		}
 		else if ((enemys->getDistrupted() && enemys->getMoveDistrupted()))
 		{
@@ -304,11 +456,18 @@ void screenManager::updateFlagPoleCollision()
 			dest.x = curFlagPole->getRenderBox().x;
 			dest.y++;
 
+			curFlagPole->updateTexture(-(dest.y - curFlagPole->getRenderBox().y - (curFlagPole->getRenderBox().h / 2)));
+
+			if (!(dest.y > (curFlagPole->getRenderBox().y + (32 * 5))))
+			{
+				highscores::Instance()->curScore++;
+			}
+
 			LocalPlayer->setPosition(dest);
 
-			if (dest.y > (curFlagPole->getRenderBox().y + (32 * 7 / 2)))
+			if (dest.y > (curFlagPole->getRenderBox().y + (32 * 5)))
 			{
-				setupLevel(SCREENS::SCREEN_LEVEL2);
+				setupLevel(SCREEN_LEVELCHANGE);
 			}
 
 			

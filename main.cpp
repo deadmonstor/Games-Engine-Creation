@@ -69,6 +69,7 @@ void gameBase::PushEvent(int id)
 
 	for (int i = 0; i < maxSize; i++)
 	{
+		if (gameScreenManager->LocalPlayer == nullptr) continue;
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
 
 		SDL_Event* a = new SDL_Event;
@@ -113,6 +114,7 @@ void gameBase::PushEvent(int id, SDL_Event event)
 
 	for (int i = 0; i < maxSize; i++)
 	{
+		if (gameScreenManager->LocalPlayer == nullptr) continue;
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
 		vectorArray.at(i)(event, gameScreenManager->LocalPlayer);
 	}
@@ -166,9 +168,6 @@ void gameBase::Render()
 
 	SDL_SetRenderDrawColor(gRenderer, (Uint8)87, (Uint8)120, (Uint8)255, (Uint8)255);
 	SDL_RenderClear(gRenderer);
-
-
-	SDL_Rect renderLocation = { timeStart - time(NULL) , 0, 7168, SCREEN_HEIGHT + 600 };
 
 	tiles::Instance()->render();
 	highscores::Instance()->render();

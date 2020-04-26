@@ -22,7 +22,10 @@ void character::keyDown(SDL_Event curEvent)
 static void keyDowns(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
-	self->keyDown(event);
+	if (self != nullptr)
+	{
+		self->keyDown(event);
+	}
 }
 
 void character::keyUp(SDL_Event curEvent)
@@ -59,7 +62,11 @@ void character::renderCharacter(SDL_Event event)
 static void renderCharacters(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
-	self->renderCharacter(event);
+	
+	if (self != nullptr)
+	{
+		self->renderCharacter(event);
+	}
 }
 
 float lerp(float start, float end, float amnt) {
@@ -75,30 +82,35 @@ void character::Update(SDL_Event event)
 		pair<int, int> curPos = getTilePos(0, -32);
 		int curPosX = get<0>(curPos), curPosY = get<1>(curPos);
 
-		if (curPosX < 0 || curPosY < 0) 
+		if (!(curPosX < 0 || curPosY < 0) )
+		{
+			if (jumpForce <= 0.0f)
+				jumping = false;
+
+			tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
+
+			character* self = static_cast<character*>(this);
+
+			if (!collisionCache[curPosX][curPosY] || collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile))
+			{
+				DestR.y = lerp(DestR.y, DestR.y - round(JUMP_FORCE * *(float*)event.user.data1), 0.75f);
+			}
+
+			jumpForce = lerp(jumpForce, jumpForce - round(JUMP_FORCE_DECREMENT * *(float*)event.user.data1), 0.75f);
+
+			
+		}
+		else 
 		{
 			jumping = false;
-			return;
 		}
-
-		if (jumpForce <= 0.0f)
-			jumping = false;
-
-		tile* curTile = tiles::Instance()->getTileMap()->at(curPosX).at(curPosY);
-		
-		character* self = static_cast<character*>(this);
-
-		if (!collisionCache[curPosX][curPosY] || collisionCache[curPosX][curPosY] && curTile != nullptr && !collisions::Instance()->Box(self, curTile) )
-		{
-			DestR.y = lerp(DestR.y, DestR.y - round(JUMP_FORCE * *(float*)event.user.data1), 0.75f);
-		}
-
-		jumpForce = lerp(jumpForce, jumpForce - round(JUMP_FORCE_DECREMENT * *(float*)event.user.data1), 0.75f);
 
 	}
 	else {
+
 		if (!stopGravity)
 			addGravity(event, *(float*)event.user.data1);
+
 	}
 
 	
@@ -159,7 +171,10 @@ void character::cancelJump()
 static void updateCharacter(SDL_Event event, void* this_pointer)
 {
 	character* self = static_cast<character*>(this_pointer);
-	self->Update(event);
+	if (self != nullptr) 
+	{
+		self->Update(event);
+	}
 }
 
 pair<int, int> character::getTilePos()

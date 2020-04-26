@@ -50,11 +50,18 @@
 			void updateFlagPoleCollision();
 
 			void renderMenuScreen();
-			string curString [2];
-			SDL_Surface* surfaceMessage [2];
-			SDL_Texture* Message [2];
-			SDL_Rect Message_rect [2];
-			SDL_Color colors[2];
+			void renderLevelChangeScreen();
+			void renderDeathScreen();
+			void renderText(int i);
+
+
+			#define textSize 5
+
+			string curString [textSize];
+			SDL_Surface* surfaceMessage [textSize];
+			SDL_Texture* Message [textSize];
+			SDL_Rect Message_rect [textSize];
+			SDL_Color colors[textSize];
 	};
 
 #endif

@@ -25,7 +25,8 @@ int oldsaveCurScore = 0;
 void highscores::render()
 {
 
-	if (screenManager::Instance()->curScreen == SCREENS::SCREEN_MENU) return;
+	if (screenManager::Instance()->curScreen == SCREENS::SCREEN_MENU || 
+		screenManager::Instance()->curScreen == SCREENS::SCREEN_LEVELCHANGE) return;
 
 	if (!surfaceMessage || curScore != oldsaveCurScore)
 	{
@@ -115,6 +116,24 @@ void highscores::addScore(string name, int points)
 		scores[MAX_SCORES - 1].score = points;
 		scores[MAX_SCORES - 1].name = name;
 	}
+
+	sortScores();
+	writeFile();
+}
+
+int highscores::getHighestScoreOfInt(int i)
+{
+	sortScores();
+
+	for (int i = 0; i < MAX_SCORES; ++i) {
+
+		if (scores[i].score == 0 || scores[i].name != to_string(i))
+			continue;
+
+		return scores[i].score;
+	}
+
+	return 0;
 }
 
 void highscores::displayScores()

@@ -15,6 +15,8 @@
 			void render();
 			static highscores* Instance();
 			int curScore = 0;
+			int rememberScore = 0;
+			int rememberLevel = 0;
 
 			struct Score {
 				string name = "N/A";
@@ -26,8 +28,9 @@
 			void addScore(string name, int point);
 			void displayScores();
 			void sortScores();
+			int getHighestScoreOfInt(int i);
 
-			#define MAX_SCORES 3
+			#define MAX_SCORES 30
 			Score scores[MAX_SCORES];
 
 		private:
