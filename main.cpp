@@ -143,9 +143,9 @@ bool gameBase::Update(SDL_Event event, float deltaTime)
 
 	gameBase::PushEvent(PRETICK, *a);
 
-	gameBase::PushEvent(event.type, event);
-
 	gameScreenManager->update();
+
+	gameBase::PushEvent(event.type, event);
 
 	a->type = POSTTICK;
 

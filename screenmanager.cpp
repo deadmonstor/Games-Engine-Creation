@@ -338,28 +338,25 @@ void screenManager::update()
 	{
 
 		case SCREENS::SCREEN_LEVELCHANGE:
-		{
 			break;
-		}
 
 		case SCREENS::SCREEN_GAMEOVER:
-		{
 			break;
-		}
 
 		default:
-		{
 			updatePowBlockCollision();
 			updateFlagPoleCollision();
 			updateEnemyCollision();
 			break;
-		}
 
 	}
 }
 
 void screenManager::updateEnemyCollision()
 {
+	if (LocalPlayer == NULL || LocalPlayer == nullptr)
+		return;
+
 	int curPosXLocalPlayer = get<0>(LocalPlayer->getTilePos()), curPosYLocalPlayer = get<1>(LocalPlayer->getTilePos());
 	SDL_Rect curPosition = LocalPlayer->getPosition();
 	for (enemy* enemys : enemyTable) 
