@@ -40,6 +40,7 @@
 			bool ignoreInput;
 			bool hasDied = false;
 			bool stopGravity = false;
+			bool canGravity = false;
 
 		private:
 

@@ -46,7 +46,7 @@ void enemy::update(SDL_Event curEvent)
 		|| canMoveProperly && curTile == nullptr))
 	{
 
-		float dist = round((moveDistrupted ? 250 : 100) * deltaTime);
+		float dist = round((moveDistrupted ? 250 : 75) * deltaTime);
 		if (curFacing == FACING::RIGHT)
 		{
 			DestRs.x = round(DestRs.x + dist);
@@ -62,7 +62,8 @@ void enemy::update(SDL_Event curEvent)
 		curFacing = (curFacing == FACING::LEFT ? FACING::RIGHT : FACING::LEFT);
 	}
 
-	addGravity(curEvent, deltaTime);
+	if (canGravity)
+		addGravity(curEvent, deltaTime);
 }
 
 void enemy::addGravity(SDL_Event event, float deltaTime)
@@ -114,8 +115,8 @@ enemy::enemy(int x, int y)
 	imgPartRects.w = 15;
 	imgPartRects.h = 23;
 
-	DestRs.x = x;
-	DestRs.y = y;
+	DestRs.x = x * 32;
+	DestRs.y = y * 32;
 	DestRs.w = 15 * 2;
 	DestRs.h = 23 * 2;
 

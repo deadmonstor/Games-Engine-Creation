@@ -19,12 +19,12 @@ tile::tile(int _x, int _y)
 
 }
 
-tile::tile(int _x, int _y, string *textureName)
+tile::tile(int _x, int _y, string textureName)
 {
     x = _x;
     y = _y;
 
-    curTexture = texture2D::Instance()->LoadTextureFromFile("Images/" + *textureName);
+    curTexture = texture2D::Instance()->LoadTextureFromFile("Images/" + textureName);
 
     imgPartRect.w = SIZE;
     imgPartRect.h = SIZE;
@@ -52,7 +52,7 @@ SDL_Rect tile::getCollisionBox()
 */
 
 
-tiles* tiles::mInstance = NULL;
+tiles* tiles::mInstance = tiles::mInstance == nullptr ? NULL : tiles::mInstance;
 
 tiles::tiles()
 {
@@ -75,7 +75,7 @@ void tiles::loadFromFile(string fileName)
 {
     mapFile.open("maps/" + fileName + ".txt");
 
-    if (!mapFile.good())
+    if (mapFile.fail())
     {
         cout << "No map found, making file " << endl;
         mapFile.open("maps/" + fileName + ".txt", fstream::in | fstream::out | fstream::trunc);;
@@ -87,12 +87,41 @@ void tiles::loadFromFile(string fileName)
         regex a(R"(\|(.*),(.*)\|(.*)\|(.))");
         smatch matches;
 
-        if (regex_match(curLine, matches, a)) {
+        if (regex_match(curLine, matches, a)) 
+        {
 
-            string curTexture = matches[3];
+            int i = stoi(matches[4]);
 
-            tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), &curTexture);
-            tileMap[stoi(matches[1])][stoi(matches[2])] = curTile;
+            switch (i)
+            {
+                case 3:
+                {
+                    tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), matches[3]);
+                    tileMap[stoi(matches[1])][stoi(matches[2])] = curTile;
+                    curTile->destructable = true;
+                }
+                break;
+                case 1:
+                {
+                    tile* curTile = new tile(stoi(matches[1]), stoi(matches[2]), matches[3]);
+                    tileMap[stoi(matches[1])][stoi(matches[2])] = curTile;
+                }
+                break;
+                case 2:
+                {
+                    powblock* curPow = new powblock(stoi(matches[1]), stoi(matches[2]));
+                    screenManager::Instance()->powTable.push_back(curPow);
+                }
+                break;
+                case 4:
+                {
+                    enemy* curEnemy = new enemy(stoi(matches[1]), stoi(matches[2]));
+                    screenManager::Instance()->enemyTable.push_back(curEnemy);
+                }
+                break;
+
+            }
+           
         }
 
     }
@@ -135,6 +164,11 @@ void tiles::wipeTiles()
 map<int, map<int, tile*>>* tiles::getTileMap()
 {
     return &tileMap;
+}
+
+void tiles::setTile(int x, int y)
+{
+    tileMap[x][y] = nullptr;;
 }
 
 void tiles::render()

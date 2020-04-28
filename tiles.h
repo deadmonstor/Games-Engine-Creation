@@ -7,6 +7,7 @@
 	#define SIZE 32
 
 	#include "texture.h"
+	#include "powblock.h"
 
 	class tile
 	{
@@ -14,9 +15,10 @@
 			int x, y;
 
 			tile(int _x, int _y);
-			tile(int _x, int _y, string *textureName);
+			tile(int _x, int _y, string textureName);
 			void render();
 			SDL_Rect getCollisionBox();
+			bool destructable = false;
 
 		private:
 			SDL_Texture* curTexture;
@@ -36,6 +38,7 @@
 			void wipeTiles();
 			static tiles* Instance();
 			map<int, map<int, tile*>>* getTileMap();
+			void setTile(int x, int y);
 
 		private:
 			map<int, map<int, tile*>> tileMap;

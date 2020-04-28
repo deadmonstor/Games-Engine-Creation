@@ -5,8 +5,8 @@ powblock::powblock(int x, int y)
 	imgRect.x = 0;
 	imgRect.y = 0;
 
-	positionRect.x = x;
-	positionRect.y = y;
+	positionRect.x = x * SIZE;
+	positionRect.y = y * SIZE;
 
 	imgRect.w = SIZE;
 	imgRect.h = SIZE;
@@ -54,6 +54,27 @@ void powblock::enemyDisrupt()
 		{
 			curEnemy->setMoveDistrupted(false);
 			curEnemy->setDistrupted(!curEnemy->getDistrupted());
+		}
+
+	}
+
+	map<int, map<int, tile*>>::iterator iteratorX;
+
+	map<int, map<int, tile*>>* tileMap = tiles::Instance()->getTileMap();
+
+	for (iteratorX = tileMap->begin(); iteratorX != tileMap->end(); iteratorX++)
+	{
+		map<int, tile*>::iterator iteratorY;
+
+		for (iteratorY = iteratorX->second.begin(); iteratorY != iteratorX->second.end(); iteratorY++)
+		{
+
+			if (iteratorY->second != nullptr && iteratorY->second->destructable)
+			{
+				delete iteratorY->second;
+				tiles::Instance()->setTile(iteratorX->first, iteratorY->first);
+			}
+
 		}
 
 	}

@@ -5,7 +5,9 @@
 	#define _HIGHSCORES_H
 
 	#include <string>
-	#include "screenmanager.h"
+	#ifndef _SCREENMANAGER_H
+		#include "screenmanager.h"
+	#endif
 
 	class highscores
 	{

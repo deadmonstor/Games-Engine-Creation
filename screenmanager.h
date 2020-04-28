@@ -48,6 +48,7 @@
 			void updateEnemyCollision();
 			void updatePowBlockCollision();
 			void updateFlagPoleCollision();
+			void updateGravity();
 
 			void renderMenuScreen();
 			void renderLevelChangeScreen();
@@ -55,7 +56,7 @@
 			void renderText(int i);
 
 
-			#define textSize 5
+			#define textSize 7
 
 			string curString [textSize];
 			SDL_Surface* surfaceMessage [textSize];

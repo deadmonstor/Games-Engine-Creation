@@ -2,7 +2,7 @@
 
 static gameBase* game;
 
-texture2D* texture2D::mInstance = NULL;
+texture2D* texture2D::mInstance = texture2D::mInstance == nullptr ? NULL : texture2D::mInstance;
 
 texture2D::texture2D(gameBase* gameBases)
 {

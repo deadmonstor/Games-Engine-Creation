@@ -1,6 +1,6 @@
 #include "collisions.h"
 
-collisions* collisions::mInstance = NULL;
+collisions* collisions::mInstance = collisions::mInstance == nullptr ? NULL : collisions::mInstance;
 
 collisions::collisions()
 {

@@ -1,7 +1,7 @@
 
 #include "highscores.h"
 
-highscores* highscores::mInstance = NULL;
+highscores* highscores::mInstance = highscores::mInstance == nullptr ? NULL : highscores::mInstance;
 
 highscores* highscores::Instance()
 {

@@ -31,6 +31,7 @@
 
 		Uint32 lastChange = 0;
 
+
 	public:
 		enemy(int x, int y);
 		~enemy();
@@ -43,6 +44,7 @@
 		pair<int, int> getTilePos();
 		pair<int, int> getTilePos(int x, int y);
 		bool getCanMove();
+		bool canGravity = false;
 
 		void setDistrupted(bool);
 		bool getDistrupted();

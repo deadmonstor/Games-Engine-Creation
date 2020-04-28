@@ -1,12 +1,13 @@
 #include "texture.h"
 #include "tiles.h"
-#include "screenmanager.h"
+
+#ifndef _SCREENMANAGER_H
+	#include "screenmanager.h"
+#endif
+
 #include "highscores.h"
 #include "main.h"
 
-
-texture2D* texture;
-screenManager* gameScreenManager;
 int main(int argc, char* args[])
 {
 	gameBase* game = gameBase::Instance();
@@ -15,14 +16,15 @@ int main(int argc, char* args[])
 		INIT MODULES
 	*/
 
-	texture = texture2D::Instance(game);
+	texture2D::Instance(game);
 
 	float tickCount = 0;
 	float deltaTime = 0;
 
 	game->SDLInit();
 
-	gameScreenManager = screenManager::Instance();
+	screenManager::Instance();
+	screenManager::Instance()->setupLevel(SCREENS::SCREEN_MENU);
 
 	while (!game->shouldQuit)
 	{
@@ -69,13 +71,13 @@ void gameBase::PushEvent(int id)
 
 	for (int i = 0; i < maxSize; i++)
 	{
-		if (gameScreenManager->LocalPlayer == nullptr) continue;
+		if (screenManager::Instance()->LocalPlayer == nullptr) continue;
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
 
 		SDL_Event* a = new SDL_Event;
 		a->type = id;
 
-		vectorArray.at(i)(*a, gameScreenManager->LocalPlayer);
+		vectorArray.at(i)(*a, screenManager::Instance()->LocalPlayer);
 
 		delete a;
 	}
@@ -114,9 +116,9 @@ void gameBase::PushEvent(int id, SDL_Event event)
 
 	for (int i = 0; i < maxSize; i++)
 	{
-		if (gameScreenManager->LocalPlayer == nullptr) continue;
+		if (screenManager::Instance()->LocalPlayer == nullptr) continue;
 		vector<void (*)(SDL_Event event, void* this_pointer)> vectorArray = hookFunctionCharacter[id];
-		vectorArray.at(i)(event, gameScreenManager->LocalPlayer);
+		vectorArray.at(i)(event, screenManager::Instance()->LocalPlayer);
 	}
 
 
@@ -143,7 +145,7 @@ bool gameBase::Update(SDL_Event event, float deltaTime)
 
 	gameBase::PushEvent(PRETICK, *a);
 
-	gameScreenManager->update();
+	screenManager::Instance()->update();
 
 	gameBase::PushEvent(event.type, event);
 
@@ -231,7 +233,7 @@ bool gameBase::SDLInit()
 
 	}
 
-	gTexture = texture->LoadTextureFromFile("Images/11.png");
+	gTexture = texture2D::Instance()->LoadTextureFromFile("Images/11.png");
 
 	if (gTexture == NULL) 
 	{
@@ -272,7 +274,7 @@ void gameBase::SDLClose()
 
 }
 
-gameBase* gameBase::mInstance = NULL;
+gameBase* gameBase::mInstance = gameBase::mInstance == nullptr ? NULL : gameBase::mInstance;
 
 gameBase::gameBase()
 {

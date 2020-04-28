@@ -1,7 +1,6 @@
 #include "soundManager.h"
 
-soundManager* soundManager::mInstance = NULL;
-
+soundManager* soundManager::mInstance = soundManager::mInstance == nullptr ? NULL : soundManager::mInstance;
 
 soundManager::soundManager()
 {

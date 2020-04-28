@@ -108,7 +108,7 @@ void character::Update(SDL_Event event)
 	}
 	else {
 
-		if (!stopGravity)
+		if (!stopGravity && canGravity)
 			addGravity(event, *(float*)event.user.data1);
 
 	}
@@ -116,6 +116,7 @@ void character::Update(SDL_Event event)
 	
 	if (curDown[SDLK_a])
 	{
+		canGravity = true;
 		pair<int, int> getTileLeft = getTilePos(-32, 0);
 		int curLeftPosX = get<0>(getTileLeft), curLeftPosY = get<1>(getTileLeft);
 
@@ -136,7 +137,7 @@ void character::Update(SDL_Event event)
 	
 	if (curDown[SDLK_d])
 	{
-
+		canGravity = true;
 		pair<int, int> getTileLeft = getTilePos(32, 0);
 		int curRightPosX = get<0>(getTileLeft), curRightPosZ = get<1>(getTileLeft);
 
@@ -233,7 +234,8 @@ character::character(gameBase* gameBases, texture2D* texture)
 
 	curTexture = texture->LoadTextureFromFile("Images/mariospritesheet.png");
 
-	DestR.y = 40;
+	DestR.x = (3 * SIZE);
+	DestR.y = (13 * SIZE);
 
 	for (int x = 0; x < 100; x++)
 	{
